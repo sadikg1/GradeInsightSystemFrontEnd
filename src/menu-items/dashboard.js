@@ -1,25 +1,18 @@
 // assets
-import { IconDashboard } from '@tabler/icons-react';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 
 // constant
-const icons = { IconDashboard };
+const icons = { SpaceDashboardIcon };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
 const dashboard = {
   id: 'dashboard',
   title: 'Dashboard',
-  type: 'group',
-  children: [
-    {
-      id: 'default',
-      title: 'Dashboard',
-      type: 'item',
-      url: '/dashboard/default',
-      icon: icons.IconDashboard,
-      breadcrumbs: false
-    }
-  ]
+  type: 'item',
+  url: '/dashboard/default',
+  icon: icons.SpaceDashboardIcon,
+  breadcrumbs: false
 };
 
 export default dashboard;

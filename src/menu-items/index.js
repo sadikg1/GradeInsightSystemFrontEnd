@@ -1,12 +1,15 @@
 import dashboard from './dashboard';
-import pages from './pages';
-import utilities from './utilities';
-import other from './other';
+import studentManagement from './studentManagement';
+import teacherManagement from './teacherManagement';
+import courseManagement from './courseManagement';
+import resultManagement from './resultManagement';
+import resultAnalysis from './resultAnalysis';
+import performanceReports from './performanceReports';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, pages, utilities, other]
+  items: [dashboard, studentManagement,teacherManagement, courseManagement,resultManagement, resultAnalysis, performanceReports]
 };
 
 export default menuItems;
