@@ -27,7 +27,8 @@ import Transitions from 'ui-component/extended/Transitions';
 import User1 from 'assets/images/users/user-round.svg';
 
 // assets
-import { IconLogout, IconSettings } from '@tabler/icons-react';
+import { IconLogout, IconSettings,IconLetterFSmall,IconServicemark,IconDevicesQuestion} from '@tabler/icons-react';
+
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -40,6 +41,7 @@ const ProfileSection = () => {
   const anchorRef = useRef(null);
   const handleLogout = async () => {
     console.log('Logout');
+    navigate('/auth/login');
   };
 
   const handleClose = (event) => {
@@ -196,7 +198,7 @@ const ProfileSection = () => {
                         onClick={() => handleFaculty()}
                       >
                         <ListItemIcon>
-                          <IconSettings stroke={1.5} size="1.3rem" />
+                          <IconLetterFSmall stroke={1.5} size="1.8rem" />
                         </ListItemIcon>
                        
                         <ListItemText primary={<Typography variant="body2">Faculty</Typography>} />
@@ -207,7 +209,7 @@ const ProfileSection = () => {
                         onClick={() => handleSemester()}
                       >
                         <ListItemIcon>
-                          <IconSettings stroke={1.5} size="1.3rem" />
+                          <IconServicemark  stroke={1.5} size="1.8rem" />
                         </ListItemIcon>
                        
                         <ListItemText primary={<Typography variant="body2">Semester</Typography>} />
@@ -218,7 +220,7 @@ const ProfileSection = () => {
                         onClick={() => handleExamType()}
                       >
                         <ListItemIcon>
-                          <IconSettings stroke={1.5} size="1.3rem" />
+                          <IconDevicesQuestion  stroke={1.5} size="1.3rem" />
                         </ListItemIcon>
                        
                         <ListItemText primary={<Typography variant="body2">Exam Type</Typography>} />

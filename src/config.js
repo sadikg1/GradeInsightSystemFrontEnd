@@ -1,7 +1,7 @@
 const config = {
   
-  basename: '/student',
-  defaultPath: '/dashboard/default',
+  basename: '/gradeinsight',
+  defaultPath: '/auth/login',
   fontFamily: `'Roboto', sans-serif`,
   borderRadius: 12
 };

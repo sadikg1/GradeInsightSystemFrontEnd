@@ -9,7 +9,7 @@ const resultAnalysis = {
   id: 'resultAnalysis',
   title: 'Result Analysis',
   type: 'item',
-  url: '/dashboard/default',
+  url: '/dashboard',
   icon: icons.AnalyticsIcon,
   breadcrumbs: false
 };

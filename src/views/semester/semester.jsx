@@ -215,7 +215,6 @@ const SemesterName = () => {
           <Button
             variant="contained"
             style={{ background: 'primary', height: '40px' }}
-            endIcon={<FaBriefcaseMedical />}
             onClick={handleClickOpen}
           >
             Add Semester

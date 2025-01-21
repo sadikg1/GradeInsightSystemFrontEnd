@@ -9,7 +9,7 @@ const performanceReports = {
   id: 'performanceReports',
   title: 'Performance Reports',
   type: 'item',
-  url: '/dashboard/default',
+  url: '/dashboard',
   icon: icons.SummarizeIcon,
   breadcrumbs: false
 };
