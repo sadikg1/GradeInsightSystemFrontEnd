@@ -19,6 +19,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 
+
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -30,7 +31,8 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import Google from 'assets/images/icons/social-google.svg';
+
+import { useNavigate } from 'react-router-dom';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -40,15 +42,14 @@ const AuthLogin = ({ ...others }) => {
   
   const [checked, setChecked] = useState(true);
 
-  const googleHandler = async () => {
-    console.error('Login');
-  };
-
   const [showPassword, setShowPassword] = useState(false);
+  const navigate=useNavigate();
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
+  const handleSubmit = () => {
+    navigate('/dashboard')
+  };
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -67,12 +68,13 @@ const AuthLogin = ({ ...others }) => {
         initialValues={{
           email: '',
           password: '',
-          submit: null
+          
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required')
         })}
+        onSubmit={(values ) =>{handleSubmit(values)} }
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
