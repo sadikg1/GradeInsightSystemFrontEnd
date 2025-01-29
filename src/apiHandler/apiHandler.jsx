@@ -39,9 +39,9 @@ const InterceptAxios = (props) => {
   return instance;
 };
 //function to authenticate
-// const getAuth = async (slug, headers = {}) => {
-//   return await InterceptAxios().get(slug, { headers });
-// };
+const getAuth = async (slug, headers = {}) => {
+  return await InterceptAxios().get(slug, { headers });
+};
 // Function to get data
 const getData = async (slug, headers = {}) => {
   console.log('url', baseURL, slug);
@@ -58,7 +58,7 @@ const postData = async (slug, payload = {}, headers = {}) => {
 
 // Function to handle PUT request
 const putData = async (slug, payload = {}, headers = {}) => {
-  console.log('url', baseURL, slug,payload);
+  console.log('url', baseURL, slug, payload);
   return await InterceptAxios().put(slug, payload, { headers });
 };
 
