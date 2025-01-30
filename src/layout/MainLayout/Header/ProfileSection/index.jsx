@@ -19,16 +19,13 @@ import Popper from '@mui/material/Popper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-
-
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
 import User1 from 'assets/images/users/user-round.svg';
 
 // assets
-import { IconLogout, IconSettings,IconLetterFSmall,IconServicemark,IconDevicesQuestion} from '@tabler/icons-react';
-
+import { IconLogout, IconSettings, IconLetterFSmall, IconServicemark, IconDevicesQuestion } from '@tabler/icons-react';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -62,18 +59,15 @@ const ProfileSection = () => {
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
-  const handleFaculty=()=>
-  {
-    navigate('/faculty')
-  }
-  const handleSemester=()=>
-    {
-      navigate('/semester')
-    }
-    const handleExamType=()=>
-      {
-        navigate('/examType')
-      }
+  const handleFaculty = () => {
+    navigate('/faculty');
+  };
+  const handleSemester = () => {
+    navigate('/semester');
+  };
+  const handleExamType = () => {
+    navigate('/examType');
+  };
 
   const prevOpen = useRef(open);
   useEffect(() => {
@@ -151,19 +145,6 @@ const ProfileSection = () => {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
-                  <Box sx={{ p: 2, pb: 0 }}>
-                    <Stack>
-                      <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">Good Morning,</Typography>
-                        <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                          Sadik Ghimire
-                        </Typography>
-                      </Stack>
-                      <Typography variant="subtitle2">Project Admin</Typography>
-                    </Stack>
-                    <Divider />
-                  </Box>
-
                   <Box sx={{ p: 2, pt: 0 }}>
                     <List
                       component="nav"
@@ -181,17 +162,7 @@ const ProfileSection = () => {
                         }
                       }}
                     >
-                      <ListItemButton
-                        sx={{ borderRadius: `${customization.borderRadius}px` }}
-                        selected={selectedIndex === 0}
-                        onClick={(event) => handleListItemClick(event, 0, '#')}
-                      >
-                        <ListItemIcon>
-                          <IconSettings stroke={1.5} size="1.3rem" />
-                        </ListItemIcon>
-                       
-                        <ListItemText primary={<Typography variant="body2">Account Settings</Typography>} />
-                      </ListItemButton>
+                      {/* Faculty Button */}
                       <ListItemButton
                         sx={{ borderRadius: `${customization.borderRadius}px` }}
                         selected={selectedIndex === 0}
@@ -200,31 +171,34 @@ const ProfileSection = () => {
                         <ListItemIcon>
                           <IconLetterFSmall stroke={1.5} size="1.8rem" />
                         </ListItemIcon>
-                       
+
                         <ListItemText primary={<Typography variant="body2">Faculty</Typography>} />
                       </ListItemButton>
+                      {/* Semester Button */}
                       <ListItemButton
                         sx={{ borderRadius: `${customization.borderRadius}px` }}
                         selected={selectedIndex === 0}
                         onClick={() => handleSemester()}
                       >
                         <ListItemIcon>
-                          <IconServicemark  stroke={1.5} size="1.8rem" />
+                          <IconServicemark stroke={1.5} size="1.8rem" />
                         </ListItemIcon>
-                       
+
                         <ListItemText primary={<Typography variant="body2">Semester</Typography>} />
                       </ListItemButton>
+                      {/* Exam Type Button */}
                       <ListItemButton
                         sx={{ borderRadius: `${customization.borderRadius}px` }}
                         selected={selectedIndex === 0}
                         onClick={() => handleExamType()}
                       >
                         <ListItemIcon>
-                          <IconDevicesQuestion  stroke={1.5} size="1.3rem" />
+                          <IconDevicesQuestion stroke={1.5} size="1.3rem" />
                         </ListItemIcon>
-                       
+
                         <ListItemText primary={<Typography variant="body2">Exam Type</Typography>} />
                       </ListItemButton>
+                      {/* Logout Button */}
                       <ListItemButton
                         sx={{ borderRadius: `${customization.borderRadius}px` }}
                         selected={selectedIndex === 4}

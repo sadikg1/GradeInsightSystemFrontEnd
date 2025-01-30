@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 // material-ui
 import Grid from '@mui/material/Grid';
 
-import FacultyTotal from './facultyTotal';
-import TeacherAndCourseTotal from './teacherAndCourseCard'
-import FacultyPerformance from './facultyPerformance';
-import TrendAnalysis from './trendAnalysis';
+import FacultyTotal from './facultyTotalStudentsCard';
+import TeacherAndCourseTotal from './totalTeacherAndCourseCard'
+import MarksCards from './marksCards';
+import TrendAnalysis from './courseAvgBarChart';
 import { gridSpacing } from 'store/constant';
 import {} from '@mui/material';
 
@@ -42,7 +42,7 @@ const Dashboard = () => {
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item lg={6} md={12} sm={12} xs={12} sx={{ height: '100%' }}>
-            <FacultyPerformance />
+            <MarksCards />
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12} >
             <TrendAnalysis />

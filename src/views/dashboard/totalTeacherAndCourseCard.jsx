@@ -22,8 +22,7 @@ const InfoCard = ({ title, value, icon, color }) => {
         height: '100%',
         borderColor: theme.palette.divider,
         backgroundColor: theme.palette.background.paper,
-        borderRadius: '10px',
-        backgroundColor: 'rgb(246, 243, 243)'
+        borderRadius: '10px'
       }}
     >
       <Avatar
@@ -84,17 +83,13 @@ const cardData = [
 
 const AdminDashboardCards = () => {
   return (
-    <Card sx={{ borderRadius: '10px' }}>
-      <CardContent>
-        <Grid container spacing={2}>
-          {cardData.map((item) => (
-            <Grid item key={item.id} lg={4} xs={12} sm={12} md={12}>
-              <InfoCard title={item.title} value={item.value} icon={item.icon} color={item.color} />
-            </Grid>
-          ))}
+    <Grid container spacing={2}>
+      {cardData.map((item) => (
+        <Grid item key={item.id} lg={4} xs={12} sm={12} md={12}>
+          <InfoCard title={item.title} value={item.value} icon={item.icon} color={item.color} />
         </Grid>
-      </CardContent>
-    </Card>
+      ))}
+    </Grid>
   );
 };
 

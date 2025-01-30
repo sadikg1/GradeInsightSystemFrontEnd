@@ -111,8 +111,11 @@ const MarksCards = () => {
   ];
 
   return (
-    <Card sx={{ borderRadius: '10px'}} >
+    <Card sx={{ borderRadius: '10px',height:450}} >
       <CardContent>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: '#333', mb: 3, textAlign:'center' }}>
+        Marks Insight
+      </Typography>
         <Grid container spacing={3}>
           {metricsData.map((metric, index) => (
             <Grid item xs={12} sm={6} md={4} lg={6} key={index}>

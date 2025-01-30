@@ -31,7 +31,7 @@ const FacultyCard = ({ faculty, totalStudents }) => {
     <Card
       variant="outlined"
       style={{ boxShadow: 'none', borderRadius: '10px' }}
-      sx={{ display: 'flex', alignItems: 'center', p: 2, height: '100%',backgroundColor:'rgb(246, 243, 243)' }}
+      sx={{ display: 'flex', alignItems: 'center', p: 2, height: '100%' }}
     >
       <Avatar
         sx={{
@@ -60,17 +60,13 @@ const FacultyCard = ({ faculty, totalStudents }) => {
 const FacultyTotal = () => {
   return (
     <div>
-      <Card sx={{ borderRadius: '10px' }}>
-        <CardContent>
-          <Grid container spacing={2}>
-            {faculties.map((faculty) => (
-              <Grid item lg={4} xs={12} md={12} key={faculty.id}>
-                <FacultyCard faculty={faculty.faculty} totalStudents={faculty.totalStudents} />
-              </Grid>
-            ))}
+      <Grid container spacing={2}>
+        {faculties.map((faculty) => (
+          <Grid item lg={4} xs={12} md={12} key={faculty.id}>
+            <FacultyCard faculty={faculty.faculty} totalStudents={faculty.totalStudents} />
           </Grid>
-        </CardContent>
-      </Card>
+        ))}
+      </Grid>
     </div>
   );
 };
