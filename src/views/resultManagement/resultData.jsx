@@ -22,26 +22,43 @@ import {
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { getData } from 'apiHandler/apiHandler';
 import ResultModal from './ResultModal';
+import DeleteModal from 'modal/DeleteModal';
 
 const ResultData = () => {
   const [selectedFaculty, setSelectedFaculty] = useState('');
   const [selectedSemester, setSelectedSemester] = useState('');
+  const [selectedExamType, setSelectedExamType] = useState('');
+  const [deleteCardId, setDeleteCardId] = useState('');
   const [students, setStudents] = useState([]);
   const [results, setResults] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [apiSemester, setApiSemester] = useState([]);
+  const [apiFaculty, setApiFaculty] = useState([]);
+  const [apiExam, setApiExam] = useState([]);
+  const [apiCourse, setApiCourse] = useState([]);
 
-  const [currentStudent, setCurrentStudent] = useState({
-    studentName: '',
-    marks: {}
-  });
+  const [editStudent, setEditStudent] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  console.log('student', editStudent);
 
   const fetchData = async () => {
     try {
       const response = await getData('/marks/result');
       setResults(response.data);
+
+      const examType = await getData('/examTypes');
+      setApiExam(examType.data);
+
+      const facultyResponse = await getData('/faculties');
+      setApiFaculty(facultyResponse.data);
+
+      const semesterResponse = await getData('/semesters');
+      setApiSemester(semesterResponse.data);
+      const courseResponse = await getData('/courses');
+      setApiCourse(courseResponse.data);
     } catch (error) {
       console.error(error);
     }
@@ -53,60 +70,108 @@ const ResultData = () => {
 
   const resultData = results.map((result) => {
     const marks = {};
-    marks[result.marks.courseId] = result.marks.mark;
+
+    result.marks.forEach((mark) => {
+      if (!marks[mark.courseId]) {
+        marks[mark.courseId] = {};
+      }
+      marks[mark.courseId][mark.examTypeId] = mark.mark;
+    });
 
     return {
       StudentId: result.studentId,
       StudentName: result.studentName,
       FacultyId: result.facultyId,
+      FacultyName: result.facultyName,
+
       SemesterId: result.semesterId,
+      SemesterName: result.semesterName,
+      ExamTypeId: [...new Set(result.marks.map((e) => e.examTypeId))], // Unique exam type IDs
       marks
     };
   });
+  console.log('resulData', resultData);
 
-  const coursesData = results.map((course) => ({
-    CourseId: course.marks.courseId,
-    CourseName: course.marks.courseName
-  }));
+  const filteredCourses = apiCourse.filter((course) => course.semesterId === selectedSemester);
 
-  const faculties = results.map((faculty) => ({
+  const faculties = apiFaculty.map((faculty) => ({
     FacultyId: faculty.facultyId,
     FacultyName: faculty.facultyName
   }));
 
-  const semesters = results.map((semester) => ({
+  const semesters = apiSemester.map((semester) => ({
     SemesterId: semester.semesterId,
     SemesterName: semester.semesterName
+  }));
+
+  const examType = apiExam.map((exam) => ({
+    ExamTypeId: exam.examTypeId,
+    ExamTypeName: exam.examTypeName
   }));
 
   const handleFacultyChange = (event) => {
     setSelectedFaculty(event.target.value);
     setSelectedSemester('');
+    setSelectedExamType('');
     setStudents([]);
   };
 
   const handleSemesterChange = (event) => {
     const semester = event.target.value;
     setSelectedSemester(semester);
+    setSelectedExamType('');
+    setStudents([]);
+  };
+  const handleExamTypeChange = (event) => {
+    const examTypes = event.target.value;
+    setSelectedExamType(examTypes);
 
-    const filteredStudents = resultData.filter((student) => student.FacultyId === selectedFaculty && student.SemesterId === semester);
+    const filteredStudents = resultData
+      .filter((student) => {
+        const isFacultyAndSemesterMatch = student.FacultyId === selectedFaculty && student.SemesterId === selectedSemester;
+
+        // Check if the student has the selected ExamTypeId in their ExamTypeId array
+        const hasSelectedExamType = student.ExamTypeId.some((id) => id === examTypes);
+
+        // If both conditions are true, return the student
+        return isFacultyAndSemesterMatch && hasSelectedExamType;
+      })
+      .map((student) => {
+        // For each student, we will return only marks for the selected ExamTypeId
+        const filteredMarks = {};
+        student.ExamTypeId.forEach((examTypeId) => {
+          if (examTypeId === examTypes) {
+            // If the examTypeId matches, include the marks for that examTypeId
+            Object.keys(student.marks).forEach((courseId) => {
+              if (student.marks[courseId][examTypeId] !== undefined) {
+                filteredMarks[courseId] = student.marks[courseId][examTypeId];
+              }
+            });
+          }
+        });
+
+        return {
+          ...student,
+          marks: filteredMarks
+        };
+      });
+
     setStudents(filteredStudents);
   };
 
   const handleAddClick = () => {
-    setIsEditMode(false);
-    setCurrentStudent({ studentName: '', marks: {} });
     setIsModalOpen(true);
+    setEditStudent('');
   };
 
   const handleEditClick = (student) => {
-    setIsEditMode(true);
-    setCurrentStudent(student);
+    setEditStudent(student);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (studentId) => {
-    setStudents(students.filter((student) => student.StudentId !== studentId));
+  const handleDelete = (markId) => {
+    setIsDeleteModalOpen(true);
+    setDeleteCardId(markId);
   };
 
   const handleModalSubmit = (studentData) => {
@@ -126,8 +191,8 @@ const ResultData = () => {
     setPage(0);
   };
 
-
   const filteredStudents = students;
+  console.log('PreBoard Exam', filteredStudents);
 
   return (
     <Box sx={{ padding: 4 }}>
@@ -169,6 +234,20 @@ const ResultData = () => {
             </FormControl>
           </Grid>
         )}
+        {selectedSemester && (
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel>Select Exam Type</InputLabel>
+              <Select value={selectedExamType} onChange={(event) => handleExamTypeChange(event)} label="Select ExamType">
+                {examType.map((exam) => (
+                  <MenuItem key={exam.ExamTypeId} value={exam.ExamTypeId}>
+                    {exam.ExamTypeName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        )}
       </Grid>
 
       {students.length > 0 && (
@@ -181,9 +260,9 @@ const ResultData = () => {
             <TableHead>
               <TableRow>
                 <TableCell align="center">Student Name</TableCell>
-                {coursesData.map((course) => (
-                  <TableCell key={course.CourseId} align="center">
-                    {course.CourseName}
+                {filteredCourses.map((course) => (
+                  <TableCell key={course.courseId} align="center">
+                    {course.courseName}
                   </TableCell>
                 ))}
                 <TableCell align="right" style={{ paddingRight: '50px' }}>
@@ -195,9 +274,9 @@ const ResultData = () => {
               {filteredStudents.map((student) => (
                 <TableRow key={student.StudentId}>
                   <TableCell align="center">{student.StudentName}</TableCell>
-                  {coursesData.map((course) => (
-                    <TableCell key={course.CourseId} align="center">
-                      {student.marks[course.CourseId] || '-'}
+                  {filteredCourses.map((course) => (
+                    <TableCell key={course.courseId} align="center">
+                      {student.marks[course.courseId] !== undefined ? student.marks[course.courseId] : '-'}
                     </TableCell>
                   ))}
                   <TableCell align="right" style={{ paddingRight: '5px' }}>
@@ -227,7 +306,7 @@ const ResultData = () => {
                         fontSize: '0.75rem',
                         padding: '4px 8px'
                       }}
-                      onClick={() => handleDelete(student.StudentId)}
+                      onClick={() => handleDelete(student.MarksId)}
                     >
                       Delete
                     </Button>
@@ -249,19 +328,20 @@ const ResultData = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
-      {selectedSemester && students.length === 0 && (
+      {selectedExamType && students.length === 0 && (
         <Typography variant="body1" sx={{ textAlign: 'center', marginTop: 4, color: 'red' }}>
-          No results available for this semester.
+          No results available for this semester and ExamType.
         </Typography>
       )}
 
-      <ResultModal
-        isOpen={isModalOpen}
-        handleClose={() => setIsModalOpen(false)}
-        handleSubmit={handleModalSubmit}
-        isEditMode={isEditMode}
-        result={results}
-         />
+      <ResultModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} handleSubmit={handleModalSubmit} student={editStudent} />
+      <DeleteModal
+        deleteModalVisible={deleteModalOpen}
+        setDeleteModalVisible={setIsDeleteModalOpen}
+        handleDeleteCardId={deleteCardId}
+        name="marks"
+        fetchData={() => window.location.reload()}
+      />
     </Box>
   );
 };
