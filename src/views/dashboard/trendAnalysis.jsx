@@ -1,49 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import { Card, CardContent } from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material';
 
 // Register necessary Chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const TrendAnalysis = () => {
-  const [data, setData] = useState({
-    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6', 'Sem 7', 'Sem 8'], // Static Semesters
-
+const CourseAverageCard = () => {
+  // Static course averages data
+  const data = {
+    labels: ['CSIT 101', 'BCA 201', 'BBM 301'], // Course names
     datasets: [
       {
-        label: 'CSIT',
-        data: [70, 75, 80, 85, 90, 85, 88, 92], // Static Data for Maths
-        borderColor: '#ff0000', // Color for the line
-        backgroundColor: 'rgba(255, 111, 97, 0.2)', // Fill color for the line area
-        fill: true,
-        tension: 0.4
-      },
-      {
-        label: 'BCA',
-        data: [60, 65, 70, 72, 78, 80, 82, 86], // Static Data for Science
-        borderColor: '#ffc107',
-        backgroundColor: 'rgba(76, 175, 80, 0.2)',
-        fill: true,
-        tension: 0.4
-      },
-      {
-        label: 'BBM',
-        data: [55, 60, 65, 70, 74, 67, 65, 54], // Static Data for History
-        borderColor: '#dc3545',
-        backgroundColor: 'rgba(63, 81, 181, 0.2)',
+        label: 'Average Marks',
+        data: [68, 72, 65], // Average marks
+        borderColor: '#4caf50', // Green color
+        backgroundColor: 'rgba(76, 175, 80, 0.2)', // Light green fill
         fill: true,
         tension: 0.4
       }
     ]
-  });
+  };
 
   const options = {
     responsive: true,
     plugins: {
       title: {
-        display: true,
-        text: 'Trend Analysis of Faculty Performance Over Semesters'
+        display: false
       },
       legend: {
         position: 'top'
@@ -53,24 +36,27 @@ const TrendAnalysis = () => {
       x: {
         title: {
           display: true,
-          text: 'Semesters'
+          text: 'Courses'
         }
       },
       y: {
         title: {
           display: true,
-          text: 'Average Passed Students (%)'
+          text: 'Average Marks'
         },
-        beginAtZero: true
+        beginAtZero: true,
+        max: 100
       }
     }
   };
 
   return (
-    <Card>
+    <Card sx={{ borderRadius: '10px' }}>
       <CardContent>
-        <div>
-          <h3>Faculty Performance Trend</h3>
+        <Typography variant="h6" gutterBottom>
+          Course Averages
+        </Typography>
+        <div style={{ height: 300 }}>
           <Line data={data} options={options} />
         </div>
       </CardContent>
@@ -78,4 +64,4 @@ const TrendAnalysis = () => {
   );
 };
 
-export default TrendAnalysis;
+export default CourseAverageCard;

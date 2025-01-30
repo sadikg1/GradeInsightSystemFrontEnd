@@ -1,56 +1,101 @@
-import React from "react";
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import Avatar from "@mui/material/Avatar";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import MenuBookIcon from "@mui/icons-material/MenuBook"; // Course Icon
-import Box from "@mui/material/Box";
+import React from 'react';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
+import PersonIcon from '@mui/icons-material/Person';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import { useTheme } from '@mui/material/styles';
 
-const TeacherAndCourseCard = ({ totalTeachers, totalCourses }) => {
+const InfoCard = ({ title, value, icon, color }) => {
+  const theme = useTheme();
+
   return (
-    <Card variant="outlined" style={{ boxShadow: "none", textAlign: "center" }} sx={{ p: 2, height: "100%" }}>
-      <CardContent>
-        <Typography variant="h6" fontWeight="bold" gutterBottom>
-          Total Teachers & Courses
+    <Card
+      variant="outlined"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        p: 2,
+        height: '100%',
+        borderColor: theme.palette.divider,
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: '10px',
+        backgroundColor: 'rgb(246, 243, 243)'
+      }}
+    >
+      <Avatar
+        sx={{
+          bgcolor: color.background,
+          width: 48,
+          height: 48,
+          mr: 2,
+          color: color.icon
+        }}
+      >
+        {icon}
+      </Avatar>
+      <CardContent sx={{ flex: 1, p: 1 }}>
+        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+          {title}
         </Typography>
-
-        {/* Teacher Icon & Count */}
-        <Box display="flex" alignItems="center" justifyContent="center" gap={2} mb={2}>
-          <Avatar sx={{ bgcolor: "#cfe8fc", width: 60, height: 60 }}>
-            <AccountCircleIcon sx={{ fontSize: 40, color: "#3f51b5" }} />
-          </Avatar>
-          <Typography variant="h5" color="primary">
-            {totalTeachers} Teachers
-          </Typography>
-        </Box>
-
-        {/* Course Icon & Count */}
-        <Box display="flex" alignItems="center" justifyContent="center" gap={2}>
-          <Avatar sx={{ bgcolor: "#ffd8b1", width: 60, height: 60 }}>
-            <MenuBookIcon sx={{ fontSize: 40, color: "#ff9800" }} />
-          </Avatar>
-          <Typography variant="h5" color="secondary">
-            {totalCourses} Courses
-          </Typography>
-        </Box>
+        <Typography variant="h4" fontWeight={600}>
+          {value}
+        </Typography>
       </CardContent>
     </Card>
   );
 };
 
-const TotalTeachersAndCourses = () => {
-  const totalTeachers = 25; // Replace with API data
-  const totalCourses = 10; // Replace with API data
+const cardData = [
+  {
+    id: 1,
+    title: 'Total Teachers',
+    value: '25',
+    icon: <PersonIcon />,
+    color: {
+      background: '#e3f2fd',
+      icon: '#1976d2'
+    }
+  },
+  {
+    id: 2,
+    title: 'Total Courses',
+    value: '10',
+    icon: <MenuBookIcon />,
+    color: {
+      background: '#fbe9e7',
+      icon: '#d84315'
+    }
+  },
+  {
+    id: 3,
+    title: 'Total Faculties',
+    value: '3',
+    icon: <AccountBalanceIcon />,
+    color: {
+      background: '#e8f5e9',
+      icon: '#2e7d32'
+    }
+  }
+];
 
+const AdminDashboardCards = () => {
   return (
-    <Grid container justifyContent="center">
-      <Grid item xs={12} sm={6} md={4}>
-        <TeacherAndCourseCard totalTeachers={totalTeachers} totalCourses={totalCourses} />
-      </Grid>
-    </Grid>
+    <Card sx={{ borderRadius: '10px' }}>
+      <CardContent>
+        <Grid container spacing={2}>
+          {cardData.map((item) => (
+            <Grid item key={item.id} lg={4} xs={12} sm={12} md={12}>
+              <InfoCard title={item.title} value={item.value} icon={item.icon} color={item.color} />
+            </Grid>
+          ))}
+        </Grid>
+      </CardContent>
+    </Card>
   );
 };
 
-export default TotalTeachersAndCourses;
+export default AdminDashboardCards;
