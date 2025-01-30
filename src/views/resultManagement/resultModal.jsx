@@ -15,26 +15,35 @@ const style = {
   p: 4
 };
 
-const ResultModal = ({ isOpen, handleClose, isEditMode, result }) => {
+const ResultModal = ({ isOpen, handleClose, isEditMode, student }) => {
   const [course, setCourses] = useState([]);
   const [examTypes, setExamType] = useState([]);
 
   const [selectedStudents, setSelectedStudents] = useState([]);
+
+  // Get the courseId and marks based on the courseId
+  const coursesId = student?.CourseId;
+  const marksForCourse = student?.marks ? student.marks[coursesId] : '';
   const initialValues = {
-    courseId: '',
-    studentId: '',
-    examTypeId: '',
-    mark: ''
+    courseId: student ? student.StudentId: '', // Assuming this is how the student has courses; adjust accordingly.
+    studentId: student ? student.StudentId : '',
+    examTypeId: student ? student.ExamTypeId : '', // If there's a specific examTypeId, take the first one
+    mark: student ? marksForCourse : '' // Assuming you have selectedCourseId to filter for marks
   };
+
   const validationSchema = Yup.object({
-    // examtypeId: Yup.string().required('Exam Type  is required'),
-    // courseId: Yup.string().required('Course is required'),
-    // studentId: Yup.string().required('Student name is required'),
-    // mark: Yup.number().required('Marks are required').positive().integer()
+    // Add validation rules here if required
   });
+
   const handleSubmit = async (values) => {
     try {
-      await postData('/marks', values);
+      if (student) {
+        await putData(`/marks/${student.MarksId}`, { ...values, marksId: student.MarksId });
+        window.location.reload();
+      } else {
+        await postData('/marks', values);
+        window.location.reload();
+      }
 
       fetchData();
       handleClose();
@@ -42,6 +51,7 @@ const ResultModal = ({ isOpen, handleClose, isEditMode, result }) => {
       console.log(err);
     }
   };
+
   const fetchData = async () => {
     const examType = await getData('/examTypes');
     setExamType(examType.data);
@@ -52,6 +62,7 @@ const ResultModal = ({ isOpen, handleClose, isEditMode, result }) => {
     const studentResponse = await getData('/students');
     setSelectedStudents(studentResponse.data);
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -60,20 +71,20 @@ const ResultModal = ({ isOpen, handleClose, isEditMode, result }) => {
     <Modal open={isOpen} onClose={handleClose}>
       <Box sx={style}>
         <Typography variant="h6" component="h2" gutterBottom>
-          {isEditMode ? 'Edit Result' : 'Add Result'}
+          {student ? 'Edit Result' : 'Add Result'}
         </Typography>
 
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            handleSubmit(values); // Pass Formik values to parent on submit
+            handleSubmit(values);
             handleClose();
           }}
         >
           {({ setFieldValue, values, touched, errors }) => (
             <Form>
-              {/* Faculty Dropdown */}
+              {/* Exam Type Dropdown */}
               <FormControl fullWidth margin="normal">
                 <InputLabel>Select Exam Type</InputLabel>
                 <Field
@@ -92,6 +103,7 @@ const ResultModal = ({ isOpen, handleClose, isEditMode, result }) => {
               </FormControl>
               {touched.examTypeId && errors.examTypeId && <div>{errors.examTypeId}</div>}
 
+              {/* Course Dropdown */}
               <FormControl fullWidth margin="normal">
                 <InputLabel>Select Course</InputLabel>
                 <Field
@@ -110,11 +122,10 @@ const ResultModal = ({ isOpen, handleClose, isEditMode, result }) => {
               </FormControl>
               {touched.courseId && errors.courseId && <div>{errors.courseId}</div>}
 
-              {/* Course Dropdown */}
-
+              {/* Marks Input */}
               <Field
                 as={TextField}
-                type="number" // Restricts input to numeric values
+                type="number"
                 name="mark"
                 label="Marks"
                 value={values.mark}
