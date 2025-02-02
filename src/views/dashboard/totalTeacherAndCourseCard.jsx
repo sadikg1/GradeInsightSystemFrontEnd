@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -8,6 +8,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { useTheme } from '@mui/material/styles';
+import { getData } from 'apiHandler/apiHandler';
 
 const InfoCard = ({ title, value, icon, color }) => {
   const theme = useTheme();
@@ -48,40 +49,54 @@ const InfoCard = ({ title, value, icon, color }) => {
   );
 };
 
-const cardData = [
-  {
-    id: 1,
-    title: 'Total Teachers',
-    value: '25',
-    icon: <PersonIcon />,
-    color: {
-      background: '#e3f2fd',
-      icon: '#1976d2'
-    }
-  },
-  {
-    id: 2,
-    title: 'Total Courses',
-    value: '10',
-    icon: <MenuBookIcon />,
-    color: {
-      background: '#fbe9e7',
-      icon: '#d84315'
-    }
-  },
-  {
-    id: 3,
-    title: 'Total Faculties',
-    value: '3',
-    icon: <AccountBalanceIcon />,
-    color: {
-      background: '#e8f5e9',
-      icon: '#2e7d32'
-    }
-  }
-];
-
 const AdminDashboardCards = () => {
+  const [facultyCount, setFacultyCount] = useState();
+  const [teacherCount, setTeacherCount] = useState();
+  const [courseCount, setCourseCount] = useState();
+
+  const fetchData = async () => {
+    const totalFaculty = await getData('faculties/facultyCount');
+    setFacultyCount(totalFaculty.data);
+    const totalTeacher = await getData('teachers/teacherCount');
+    setTeacherCount(totalTeacher.data);
+    const totalCourse = await getData('courses/courseCount');
+    setCourseCount(totalCourse.data);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const cardData = [
+    {
+      id: 1,
+      title: 'Total Teachers',
+      value: teacherCount ? teacherCount.totalTeacher : 'Loading...',
+      icon: <PersonIcon />,
+      color: {
+        background: '#e3f2fd',
+        icon: '#1976d2'
+      }
+    },
+    {
+      id: 2,
+      title: 'Total Courses',
+      value: courseCount ? courseCount.totalCourse : 'Loading...',
+      icon: <MenuBookIcon />,
+      color: {
+        background: '#fbe9e7',
+        icon: '#d84315'
+      }
+    },
+    {
+      id: 3,
+      title: 'Total Faculties',
+      value: facultyCount ? facultyCount.totalFaculty : 'Loading...',
+      icon: <AccountBalanceIcon />,
+      color: {
+        background: '#e8f5e9',
+        icon: '#2e7d32'
+      }
+    }
+  ];
   return (
     <Grid container spacing={2}>
       {cardData.map((item) => (

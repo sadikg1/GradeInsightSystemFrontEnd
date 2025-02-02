@@ -1,29 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import Avatar from '@mui/material/Avatar'; // Added Avatar for consistent icon presentation
+import { getData } from 'apiHandler/apiHandler';
 
 // Faculty-wise student count
-const faculties = [
-  {
-    id: 1,
-    faculty: 'BSc. CSIT',
-    totalStudents: 120
-  },
-  {
-    id: 2,
-    faculty: 'BCA',
-    totalStudents: 95
-  },
-  {
-    id: 3,
-    faculty: 'BBM',
-    totalStudents: 80
-  }
-];
+
 
 // Faculty Card Component
 const FacultyCard = ({ faculty, totalStudents }) => {
@@ -58,6 +43,21 @@ const FacultyCard = ({ faculty, totalStudents }) => {
 
 // Main Component
 const FacultyTotal = () => {
+  const [studentInFacultyCount, setStudentFacultyCount] = useState([]);
+  const fetchData = async () => {
+    const totalStudentInFaculty = await getData('students/studentCount');
+    setStudentFacultyCount(totalStudentInFaculty.data);
+  };
+  console.log("studentFaculty",studentInFacultyCount)
+  useEffect(() => {
+      fetchData();
+    }, []);
+    const faculties = Object.entries(studentInFacultyCount || {}).map(([facultyName, studentCount], index) => ({
+      id: index + 1, 
+      faculty: facultyName, 
+      totalStudents: studentCount
+    }));
+    console.log("count",faculties)
   return (
     <div>
       <Grid container spacing={2}>

@@ -74,6 +74,7 @@ const ResultData = () => {
     result.marks.forEach((mark) => {
       if (!marks[mark.courseId]) {
         marks[mark.courseId] = {};
+        marks[mark.markId]={};
       }
       marks[mark.courseId][mark.examTypeId] = mark.mark;
     });
@@ -83,7 +84,7 @@ const ResultData = () => {
       StudentName: result.studentName,
       FacultyId: result.facultyId,
       FacultyName: result.facultyName,
-
+      MarkId: [...new Set(result.marks.map((e) => e.marksId))],
       SemesterId: result.semesterId,
       SemesterName: result.semesterName,
       ExamTypeId: [...new Set(result.marks.map((e) => e.examTypeId))], // Unique exam type IDs
@@ -265,9 +266,6 @@ const ResultData = () => {
                     {course.courseName}
                   </TableCell>
                 ))}
-                <TableCell align="right" style={{ paddingRight: '50px' }}>
-                  Actions
-                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -276,41 +274,27 @@ const ResultData = () => {
                   <TableCell align="center">{student.StudentName}</TableCell>
                   {filteredCourses.map((course) => (
                     <TableCell key={course.courseId} align="center">
-                      {student.marks[course.courseId] !== undefined ? student.marks[course.courseId] : '-'}
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {student.marks[course.courseId] !== undefined ? student.marks[course.courseId] : '-'}
+                        <Box sx={{ ml: 1, display: 'flex' }}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleEditClick(student.MarkId[i])}
+                            sx={{ color: '#2397F3', padding: '4px' }}
+                          >
+                            <FaEdit size={14} />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleDelete(markData?.marksId)}
+                            sx={{ color: '#f44336', padding: '4px' }}
+                          >
+                            <FaTrash size={14} />
+                          </IconButton>
+                        </Box>
+                      </Box>
                     </TableCell>
                   ))}
-                  <TableCell align="right" style={{ paddingRight: '5px' }}>
-                    <Button
-                      variant="outlined"
-                      startIcon={<FaEdit size={15} style={{ color: '#2397F3' }} />}
-                      sx={{
-                        color: '#2397F3',
-                        borderColor: '#2397F3',
-                        '&:hover': { borderColor: '#2397F3', color: '#2397F3' },
-                        marginRight: 1,
-                        fontSize: '0.75rem',
-                        padding: '4px 8px'
-                      }}
-                      onClick={() => handleEditClick(student)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      startIcon={<FaTrash size={15} style={{ color: '#f44336' }} />}
-                      sx={{
-                        color: '#f44336',
-                        borderColor: '#f44336',
-                        '&:hover': { borderColor: '#f44336', color: '#f44336' },
-                        marginRight: 1,
-                        fontSize: '0.75rem',
-                        padding: '4px 8px'
-                      }}
-                      onClick={() => handleDelete(student.MarksId)}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
