@@ -44,25 +44,26 @@ const StudentManagement = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [student, setStudent] = useState([]);
   const [faculty, setFaculty] = useState([]);
+  const [semester, setSemester] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editCardId, setEditCardId] = useState(null);
   const [deleteCardId, setDeleteCardId] = useState(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [initialValues, setInitialValues] = useState({ studentName: '', facultyId: '', address: '', contactNo: '' });
+  const [initialValues, setInitialValues] = useState({ studentName: '', facultyId: '', semesterId: '', address: '', contactNo: '' });
 
   // function for closing modal
   const handleClose = () => {
     setOpen(false);
-    setInitialValues({ studentName: '', facultyId: '', address: '', contactNo: '' });
+    setInitialValues({ studentName: '', facultyId: '', semesterId: '', address: '', contactNo: '' });
   };
 
   // function for opening modal
   const handleClickOpen = () => {
     setIsEdit(false);
     setOpen(true);
-    setInitialValues({ studentName: '', facultyId: '', address: '', contactNo: '' });
+    setInitialValues({ studentName: '', facultyId: '', semesterId: '', address: '', contactNo: '' });
   };
 
   // function for getting the data
@@ -71,6 +72,7 @@ const StudentManagement = () => {
     try {
       await getData('/students').then((res) => setStudent(res.data));
       await getData('/faculties').then((res) => setFaculty(res.data));
+      await getData('/semesters').then((res) => setSemester(res.data));
     } catch (err) {
       console.log('Error is:', err);
     }
@@ -103,7 +105,8 @@ const StudentManagement = () => {
     studentName: Yup.string().max(100).required('Student Name is required'),
     address: Yup.string().max(100).required('Address is required'),
     contactNo: Yup.string().max(10).required('Contact Number is required'),
-    facultyId: Yup.string().max(100).required('Faculty Name is required')
+    facultyId: Yup.string().max(100).required('Faculty Name is required'),
+    semesterId: Yup.string().max(100).required('Semester Name is required')
   });
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -127,11 +130,11 @@ const StudentManagement = () => {
     }
   };
 
-  const handleEdit = (id, facultyId, name, address, contactNo) => {
+  const handleEdit = (id, facultyId, semesterId, name, address, contactNo) => {
     setIsEdit(true);
     setEditCardId(id);
     setOpen(true);
-    setInitialValues({ studentName: name, facultyId: facultyId, address: address, contactNo: contactNo });
+    setInitialValues({ studentName: name, facultyId: facultyId, semesterId: semesterId, address: address, contactNo: contactNo });
   };
 
   // Delete Service Card
@@ -245,7 +248,6 @@ const StudentManagement = () => {
                       helperText={touched.studentName && errors.studentName}
                       variant="filled"
                       style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
-
                     />
                     <Field
                       as={TextField}
@@ -256,7 +258,6 @@ const StudentManagement = () => {
                       helperText={touched.address && errors.address}
                       variant="filled"
                       style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
-
                     />
                     <Field
                       as={TextField}
@@ -267,7 +268,6 @@ const StudentManagement = () => {
                       helperText={touched.contactNo && errors.contactNo}
                       variant="filled"
                       style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
-
                     />
 
                     <TextField
@@ -287,6 +287,28 @@ const StudentManagement = () => {
                         return (
                           <MenuItem value={item.facultyId} key={i}>
                             {item.facultyName}
+                          </MenuItem>
+                        );
+                      })}
+                    </TextField>
+
+                    <TextField
+                      select
+                      id="semesterId"
+                      label="Semester Name"
+                      name="semesterId"
+                      variant="filled"
+                      required
+                      value={values.semesterId}
+                      fullWidth
+                      onChange={handleChange}
+                      style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
+                    >
+                      <MenuItem disabled>Select Semester</MenuItem>
+                      {semester.map((item, i) => {
+                        return (
+                          <MenuItem value={item.semesterId} key={i}>
+                            {item.semesterName}
                           </MenuItem>
                         );
                       })}
@@ -334,6 +356,7 @@ const StudentManagement = () => {
                 </TableSortLabel>
               </TableCell>
               <TableCell align="center">Faculty</TableCell>
+              <TableCell align="center">Semester</TableCell>
               <TableCell align="center">Address</TableCell>
               <TableCell align="center">Contact Number</TableCell>
 
@@ -350,6 +373,7 @@ const StudentManagement = () => {
                 <TableCell style={{ paddingLeft: '10px' }}>{row.studentName}</TableCell>
 
                 <TableCell align="center">{row.faculty.facultyName}</TableCell>
+                <TableCell align="center">{row.semester.semesterName}</TableCell>
                 <TableCell align="center">{row.address}</TableCell>
                 <TableCell align="center">{row.contactNo}</TableCell>
 
@@ -368,7 +392,7 @@ const StudentManagement = () => {
                     }}
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent row click when button is clicked
-                      handleEdit(row.studentId, row.facultyId, row.studentName, row.address, row.contactNo); // Your edit logic
+                      handleEdit(row.studentId, row.facultyId, row.semesterId, row.studentName, row.address, row.contactNo); // Your edit logic
                     }}
                   >
                     Edit
