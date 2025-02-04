@@ -11,6 +11,8 @@ const Dashboard = Loadable(lazy(() => import('views/dashboard')));
 const StudentManagement = Loadable(lazy(() => import('views/studentManagement/studentManagement')));
 const TeacherManagement = Loadable(lazy(() => import('views/teacherManagement/teacherManagement')));
 const CourseManagement = Loadable(lazy(() => import('views/courseManagement/courseManagement')));
+const TeacherCourseManagement = Loadable(lazy(() => import('views/teacherCourseManagement/teacherCourseManagement')));
+
 const ResultManagement = Loadable(lazy(() => import('views/resultManagement/resultManagement')));
 const UserManagement = Loadable(lazy(() => import('views/users/users')));
 
@@ -45,6 +47,11 @@ const MainRoutes = {
       element: <CourseManagement /> // Directly associate the component with the parent route
     },
     {
+      path: 'teacherCourseManagement', // Parent path
+      element: <TeacherCourseManagement /> // Directly associate the component with the parent route
+    },
+
+    {
       path: 'faculty', // Empty path for default rendering under 'studentManagement'
       element: <Faculty />
     },
@@ -62,7 +69,7 @@ const MainRoutes = {
     },
     {
       path: 'users', // Parent path
-      element:<UserManagement></UserManagement>
+      element: <UserManagement></UserManagement>
     }
   ]
 };

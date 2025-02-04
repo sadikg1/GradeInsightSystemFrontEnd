@@ -14,35 +14,28 @@ import {
   TableRow,
   Paper,
   Typography,
-  IconButton,
   TextField,
   Grid,
   TablePagination
 } from '@mui/material';
-import { FaEdit, FaTrash } from 'react-icons/fa';
 import { getData } from 'apiHandler/apiHandler';
 import ResultModal from './ResultModal';
-import DeleteModal from 'modal/DeleteModal';
 
 const ResultData = () => {
   const [selectedFaculty, setSelectedFaculty] = useState('');
   const [selectedSemester, setSelectedSemester] = useState('');
   const [selectedExamType, setSelectedExamType] = useState('');
-  const [deleteCardId, setDeleteCardId] = useState('');
   const [students, setStudents] = useState([]);
   const [results, setResults] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [apiSemester, setApiSemester] = useState([]);
   const [apiFaculty, setApiFaculty] = useState([]);
   const [apiExam, setApiExam] = useState([]);
   const [apiCourse, setApiCourse] = useState([]);
 
   const [editStudent, setEditStudent] = useState([]);
-  const [isEditMode, setIsEditMode] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  console.log('student', editStudent);
 
   const fetchData = async () => {
     try {
@@ -74,7 +67,6 @@ const ResultData = () => {
     result.marks.forEach((mark) => {
       if (!marks[mark.courseId]) {
         marks[mark.courseId] = {};
-        marks[mark.markId]={};
       }
       marks[mark.courseId][mark.examTypeId] = mark.mark;
     });
@@ -84,14 +76,12 @@ const ResultData = () => {
       StudentName: result.studentName,
       FacultyId: result.facultyId,
       FacultyName: result.facultyName,
-      MarkId: [...new Set(result.marks.map((e) => e.marksId))],
       SemesterId: result.semesterId,
       SemesterName: result.semesterName,
-      ExamTypeId: [...new Set(result.marks.map((e) => e.examTypeId))], // Unique exam type IDs
+      ExamTypeId: [...new Set(result.marks.map((e) => e.examTypeId))],
       marks
     };
   });
-  console.log('resulData', resultData);
 
   const filteredCourses = apiCourse.filter((course) => course.semesterId === selectedSemester);
 
@@ -123,6 +113,7 @@ const ResultData = () => {
     setSelectedExamType('');
     setStudents([]);
   };
+
   const handleExamTypeChange = (event) => {
     const examTypes = event.target.value;
     setSelectedExamType(examTypes);
@@ -130,19 +121,13 @@ const ResultData = () => {
     const filteredStudents = resultData
       .filter((student) => {
         const isFacultyAndSemesterMatch = student.FacultyId === selectedFaculty && student.SemesterId === selectedSemester;
-
-        // Check if the student has the selected ExamTypeId in their ExamTypeId array
         const hasSelectedExamType = student.ExamTypeId.some((id) => id === examTypes);
-
-        // If both conditions are true, return the student
         return isFacultyAndSemesterMatch && hasSelectedExamType;
       })
       .map((student) => {
-        // For each student, we will return only marks for the selected ExamTypeId
         const filteredMarks = {};
         student.ExamTypeId.forEach((examTypeId) => {
           if (examTypeId === examTypes) {
-            // If the examTypeId matches, include the marks for that examTypeId
             Object.keys(student.marks).forEach((courseId) => {
               if (student.marks[courseId][examTypeId] !== undefined) {
                 filteredMarks[courseId] = student.marks[courseId][examTypeId];
@@ -165,22 +150,8 @@ const ResultData = () => {
     setEditStudent('');
   };
 
-  const handleEditClick = (student) => {
-    setEditStudent(student);
-    setIsModalOpen(true);
-  };
-
-  const handleDelete = (markId) => {
-    setIsDeleteModalOpen(true);
-    setDeleteCardId(markId);
-  };
-
   const handleModalSubmit = (studentData) => {
-    if (isEditMode) {
-      setStudents(students.map((student) => (student.StudentId === studentData.StudentId ? studentData : student)));
-    } else {
-      setStudents([...students, { ...studentData, StudentId: `S${students.length + 1}` }]);
-    }
+    setStudents([...students, { ...studentData, StudentId: `S${students.length + 1}` }]);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -193,7 +164,6 @@ const ResultData = () => {
   };
 
   const filteredStudents = students;
-  console.log('PreBoard Exam', filteredStudents);
 
   return (
     <Box sx={{ padding: 4 }}>
@@ -276,7 +246,6 @@ const ResultData = () => {
                     <TableCell key={course.courseId} align="center">
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {student.marks[course.courseId] !== undefined ? student.marks[course.courseId] : '-'}
-                        
                       </Box>
                     </TableCell>
                   ))}
@@ -304,13 +273,6 @@ const ResultData = () => {
       )}
 
       <ResultModal isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} handleSubmit={handleModalSubmit} student={editStudent} />
-      <DeleteModal
-        deleteModalVisible={deleteModalOpen}
-        setDeleteModalVisible={setIsDeleteModalOpen}
-        handleDeleteCardId={deleteCardId}
-        name="marks"
-        fetchData={() => window.location.reload()}
-      />
     </Box>
   );
 };
