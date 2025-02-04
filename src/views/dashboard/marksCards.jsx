@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -11,6 +11,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useTheme } from '@mui/material/styles';
+import { getData } from 'apiHandler/apiHandler';
 
 const MarksMetricCard = ({ title, value, icon, color, trend }) => {
   const theme = useTheme();
@@ -21,8 +22,8 @@ const MarksMetricCard = ({ title, value, icon, color, trend }) => {
         height: '100%',
         border: `1px solid ${theme.palette.divider}`,
         transition: '0.3s',
-        backgroundColor:'rgb(246, 243, 243)',
-        borderRadius:'10px'
+        backgroundColor: 'rgb(246, 243, 243)',
+        borderRadius: '10px'
       }}
     >
       <CardContent sx={{ display: 'flex', alignItems: 'center', p: 2.5 }}>
@@ -63,59 +64,76 @@ const MarksMetricCard = ({ title, value, icon, color, trend }) => {
 };
 
 const MarksCards = () => {
-  // Sample data (replace with actual API data)
+  const [resultInsight, setResultInsight] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getData('marks/resultInsight');
+        setResultInsight(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Check if data is still loading
+  if (!resultInsight) {
+    return (
+      <Typography variant="h6" align="center">
+        Loading...
+      </Typography>
+    );
+  }
+
+  // Dynamically populate metricsData with API response
   const metricsData = [
     {
       title: 'Average Mark',
-      value: '68.4',
+      value: resultInsight['Average Mark'] || 'N/A',
       icon: <TrendingUpIcon />,
-      color: { background: '#e8f5e9', icon: '#4caf50' },
-      trend: 2.4,
-      sql: `SELECT AVG(Mark) FROM dbo.Marks`
+      color: { background: '#e8f5e9', icon: '#4caf50' }
     },
     {
       title: 'Highest Mark',
-      value: '98',
+      value: resultInsight['Highest Mark'] || 'N/A',
       icon: <EmojiEventsIcon />,
-      color: { background: '#fff3e0', icon: '#ef6c00' },
-      sql: `SELECT MAX(Mark) FROM dbo.Marks`
+      color: { background: '#fff3e0', icon: '#ef6c00' }
     },
     {
       title: 'Lowest Mark',
-      value: '22',
+      value: resultInsight['Lowest Mark'] || 'N/A',
       icon: <WarningIcon />,
-      color: { background: '#fbe9e7', icon: '#d32f2f' },
-      sql: `SELECT MIN(Mark) FROM dbo.Marks`
+      color: { background: '#fbe9e7', icon: '#d32f2f' }
     },
     {
       title: 'Total Marks Recorded',
-      value: '2,456',
+      value: resultInsight['Total Marks Recorded'] || 'N/A',
       icon: <AssignmentIcon />,
-      color: { background: '#e3f2fd', icon: '#1976d2' },
-      sql: `SELECT COUNT(MarksId) FROM dbo.Marks`
+      color: { background: '#e3f2fd', icon: '#1976d2' }
     },
     {
       title: 'Pass Rate',
-      value: '84%',
+      value: resultInsight['Pass Rate'] || 'N/A',
       icon: <CheckCircleIcon />,
-      color: { background: '#e8f5e9', icon: '#2e7d32' },
-      sql: `SELECT (COUNT(CASE WHEN Mark >= 40 THEN 1 END) * 100.0 / COUNT(*)) FROM dbo.Marks`
+      color: { background: '#e8f5e9', icon: '#2e7d32' }
     },
     {
       title: 'Fail Rate',
-      value: '16%',
+      value: resultInsight['Fail Rate'] || 'N/A',
       icon: <CancelIcon />,
-      color: { background: '#fce4ec', icon: '#c2185b' },
-      sql: `SELECT (COUNT(CASE WHEN Mark < 40 THEN 1 END) * 100.0 / COUNT(*)) FROM dbo.Marks`
+      color: { background: '#fce4ec', icon: '#c2185b' }
     }
   ];
 
   return (
-    <Card sx={{ borderRadius: '10px',height:450}} >
+    <Card sx={{ borderRadius: '10px', height: 450 }}>
       <CardContent>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: '#333', mb: 3, textAlign:'center' }}>
-        Marks Insight
-      </Typography>
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: '#333', mb: 3, textAlign: 'center' }}>
+          Marks Insight
+        </Typography>
         <Grid container spacing={3}>
           {metricsData.map((metric, index) => (
             <Grid item xs={12} sm={6} md={4} lg={6} key={index}>

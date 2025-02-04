@@ -276,22 +276,7 @@ const ResultData = () => {
                     <TableCell key={course.courseId} align="center">
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {student.marks[course.courseId] !== undefined ? student.marks[course.courseId] : '-'}
-                        <Box sx={{ ml: 1, display: 'flex' }}>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleEditClick(student.MarkId[i])}
-                            sx={{ color: '#2397F3', padding: '4px' }}
-                          >
-                            <FaEdit size={14} />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleDelete(markData?.marksId)}
-                            sx={{ color: '#f44336', padding: '4px' }}
-                          >
-                            <FaTrash size={14} />
-                          </IconButton>
-                        </Box>
+                        
                       </Box>
                     </TableCell>
                   ))}
