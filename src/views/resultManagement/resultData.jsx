@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { getData } from 'apiHandler/apiHandler';
 import ResultModal from './ResultModal';
+import { FaEye } from 'react-icons/fa';
 
 const ResultData = () => {
   const [selectedFaculty, setSelectedFaculty] = useState('');
@@ -236,6 +237,9 @@ const ResultData = () => {
                     {course.courseName}
                   </TableCell>
                 ))}
+                <TableCell align="center">
+                  View Result
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -249,6 +253,26 @@ const ResultData = () => {
                       </Box>
                     </TableCell>
                   ))}
+                  <TableCell align='center'>
+                    <Button
+                      variant="outlined"
+                      startIcon={<FaEye size={15} style={{ color: '#2397F3' }} />}
+                      sx={{
+                        color: '#2397F3',
+                        borderColor: '#2397F3',
+                        '&:hover': { borderColor: '#2397F3', color: '#2397F3' },
+                        marginRight: 1,
+                        fontSize: '0.75rem',
+                        padding: '4px 8px'
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent row click when button is clicked
+                        handleEdit(row.studentId, row.facultyId, row.semesterId, row.studentName, row.address, row.contactNo); // Your edit logic
+                      }}
+                    >
+                      View
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
