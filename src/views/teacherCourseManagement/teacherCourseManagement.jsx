@@ -100,12 +100,20 @@ const TeacherCourseManagement = () => {
   const handleSubmit = async (values) => {
     try {
       if (isEdit && editCardId) {
-        await putData(`/TeacherxCourses/${editCardId}`, { ...values, teacherxCourseId: editCardId });
+        const updatedData = await putData(`/TeacherxCourses/${editCardId}`, { ...values, teacherxCourseId: editCardId });
+
+        // Optimistic UI update: Update the specific record in the state
+        setTeacherxCourses((prevState) => {
+          return prevState.map((item) => (item.teacherxCourseId === editCardId ? { ...item, ...updatedData.data } : item));
+        });
       } else {
-        await postData('/TeacherxCourses', values);
+        const newData = await postData('/TeacherxCourses', values);
+
+        // Optimistic UI update: Add the new record to the state
+        setTeacherxCourses((prevState) => [...prevState, newData.data]);
       }
-      fetchData();
       handleClose();
+      fetchData();
     } catch (err) {
       console.log(err);
     }
@@ -224,13 +232,19 @@ const TeacherCourseManagement = () => {
                       style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
                     >
                       <MenuItem disabled>Select Teacher</MenuItem>
-                      {teachers.map((item, i) => {
-                        return (
-                          <MenuItem value={item.teacherId} key={i}>
-                            {item.teacherName}
-                          </MenuItem>
-                        );
-                      })}
+                      {teachers &&
+                        teachers.length > 0 &&
+                        teachers.map((item, i) => {
+                          // Safely check for teacherName and ensure the object is not null
+                          if (item && item.teacherName) {
+                            return (
+                              <MenuItem value={item.teacherId} key={i}>
+                                {item.teacherName}
+                              </MenuItem>
+                            );
+                          }
+                          return null; // Don't render if teacherName is missing
+                        })}
                     </TextField>
                     <TextField
                       select
@@ -357,6 +371,13 @@ const TeacherCourseManagement = () => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <DeleteModal
+        deleteModalVisible={deleteModalVisible}
+        setDeleteModalVisible={setDeleteModalVisible}
+        handleDeleteCardId={deleteCardId}
+        name="teacherxCourses"
+        fetchData={fetchData}
       />
     </Paper>
   );
