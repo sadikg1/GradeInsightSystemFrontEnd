@@ -99,8 +99,10 @@ const TeacherManagement = () => {
 
   const validationSchema = Yup.object().shape({
     teacherName: Yup.string().max(100).required('Teacher Name is required'),
-    contactNo: Yup.string().max(10).required('Contact Number is required'),
-    email: Yup.string().max(100).required('Email is required')
+    contactNo: Yup.string()
+      .matches(/^[0-9]{7}$|^[0-9]{10}$/, 'Contact Number must be 7 or 10 digits')
+      .required('Contact Number is required'),
+    email: Yup.string().email('Invalid email format').max(100).required('Email is required')
   });
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -241,7 +243,7 @@ const TeacherManagement = () => {
                       error={touched.teacherName && Boolean(errors.teacherName)}
                       helperText={touched.teacherName && errors.teacherName}
                       variant="filled"
-                      style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
+                      style={{ height: '50px', marginTop: '10px', borderRadius: '10px' }}
                     />
                     <Field
                       as={TextField}
@@ -251,7 +253,7 @@ const TeacherManagement = () => {
                       error={touched.contactNo && Boolean(errors.contactNo)}
                       helperText={touched.contactNo && errors.contactNo}
                       variant="filled"
-                      style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
+                      style={{ height: '50px', marginTop: '25px', borderRadius: '10px' }}
                     />
                     <Field
                       as={TextField}
@@ -261,7 +263,7 @@ const TeacherManagement = () => {
                       error={touched.contactNo && Boolean(errors.email)}
                       helperText={touched.contactNo && errors.email}
                       variant="filled"
-                      style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
+                      style={{ height: '50px', marginTop: '25px', borderRadius: '10px' }}
                     />
                   </Grid>
                   <Grid item xs={12} style={{ textAlign: 'right' }}>
@@ -272,7 +274,7 @@ const TeacherManagement = () => {
                       onClick={() => {
                         handleClose();
                       }}
-                      style={{ marginRight: '8px', background: '#808080' }}
+                      style={{ marginRight: '25px', background: '#808080' }}
                     >
                       Cancel
                     </Button>

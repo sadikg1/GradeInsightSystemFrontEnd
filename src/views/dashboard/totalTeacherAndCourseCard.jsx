@@ -72,8 +72,8 @@ const AdminDashboardCards = () => {
       value: teacherCount ? teacherCount.totalTeacher : 'Loading...',
       icon: <PersonIcon />,
       color: {
-        background: '#e3f2fd',
-        icon: '#1976d2'
+        background: '#e8f5e9',
+        icon: '#2e7d32'
       }
     },
     {
@@ -82,8 +82,8 @@ const AdminDashboardCards = () => {
       value: courseCount ? courseCount.totalCourse : 'Loading...',
       icon: <MenuBookIcon />,
       color: {
-        background: '#fbe9e7',
-        icon: '#d84315'
+        background: '#e8f5e9',
+        icon: '#2e7d32'
       }
     },
     {

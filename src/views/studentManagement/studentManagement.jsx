@@ -104,7 +104,9 @@ const StudentManagement = () => {
   const validationSchema = Yup.object().shape({
     studentName: Yup.string().max(100).required('Student Name is required'),
     address: Yup.string().max(100).required('Address is required'),
-    contactNo: Yup.string().max(10).required('Contact Number is required'),
+    contactNo: Yup.string()
+    .matches(/^[0-9]{7}$|^[0-9]{10}$/, 'Contact Number must be 7 or 10 digits')
+    .required('Contact Number is required'),
     facultyId: Yup.string().max(100).required('Faculty Name is required'),
     semesterId: Yup.string().max(100).required('Semester Name is required')
   });
@@ -247,7 +249,7 @@ const StudentManagement = () => {
                       error={touched.studentName && Boolean(errors.studentName)}
                       helperText={touched.studentName && errors.studentName}
                       variant="filled"
-                      style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
+                      style={{ height: '50px', marginTop: '10px', borderRadius: '10px' }}
                     />
                     <Field
                       as={TextField}
@@ -257,7 +259,7 @@ const StudentManagement = () => {
                       error={touched.address && Boolean(errors.address)}
                       helperText={touched.address && errors.address}
                       variant="filled"
-                      style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
+                      style={{ height: '50px', marginTop: '25px', borderRadius: '10px' }}
                     />
                     <Field
                       as={TextField}
@@ -267,7 +269,7 @@ const StudentManagement = () => {
                       error={touched.contactNo && Boolean(errors.contactNo)}
                       helperText={touched.contactNo && errors.contactNo}
                       variant="filled"
-                      style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
+                      style={{ height: '50px', marginTop: '25px', borderRadius: '10px' }}
                     />
 
                     <TextField
@@ -280,7 +282,7 @@ const StudentManagement = () => {
                       value={values.facultyId}
                       fullWidth
                       onChange={handleChange}
-                      style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
+                      style={{ height: '50px', marginTop: '25px', borderRadius: '10px' }}
                     >
                       <MenuItem disabled>Select Faculty</MenuItem>
                       {faculty.map((item, i) => {
@@ -302,7 +304,7 @@ const StudentManagement = () => {
                       value={values.semesterId}
                       fullWidth
                       onChange={handleChange}
-                      style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
+                      style={{ height: '50px', marginTop: '25px', borderRadius: '10px' }}
                     >
                       <MenuItem disabled>Select Semester</MenuItem>
                       {semester.map((item, i) => {

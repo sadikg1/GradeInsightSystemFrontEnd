@@ -21,6 +21,7 @@ import {
 import { getData } from 'apiHandler/apiHandler';
 import ResultModal from './ResultModal';
 import { FaEye } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const ResultData = () => {
   const [selectedFaculty, setSelectedFaculty] = useState('');
@@ -150,6 +151,22 @@ const ResultData = () => {
     setIsModalOpen(true);
     setEditStudent('');
   };
+  const navigate = useNavigate();
+
+  const handleView = (student) => {
+    console.log('Student object received in handleView:', student); // Debugging log
+
+    // Correct the property name (case-sensitive)
+    const studentId = student.StudentId;
+
+    if (!studentId) {
+      console.error('Error: StudentId is missing', student);
+      return;
+    }
+
+    console.log('Navigating with studentId:', studentId);
+    navigate('/resultView', { state: { studentId } });
+  };
 
   const handleModalSubmit = (studentData) => {
     setStudents([...students, { ...studentData, StudentId: `S${students.length + 1}` }]);
@@ -237,9 +254,7 @@ const ResultData = () => {
                     {course.courseName}
                   </TableCell>
                 ))}
-                <TableCell align="center">
-                  View Result
-                </TableCell>
+                <TableCell align="center">View Result</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -253,7 +268,7 @@ const ResultData = () => {
                       </Box>
                     </TableCell>
                   ))}
-                  <TableCell align='center'>
+                  <TableCell align="center">
                     <Button
                       variant="outlined"
                       startIcon={<FaEye size={15} style={{ color: '#2397F3' }} />}
@@ -267,7 +282,8 @@ const ResultData = () => {
                       }}
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent row click when button is clicked
-                        handleEdit(row.studentId, row.facultyId, row.semesterId, row.studentName, row.address, row.contactNo); // Your edit logic
+                        console.log('Student passed to handleView:', student);
+                        handleView(student); // Your edit logic
                       }}
                     >
                       View

@@ -20,6 +20,11 @@ const Faculty = Loadable(lazy(() => import('views/faculty/faculty')));
 const Semester = Loadable(lazy(() => import('views/semester/semester')));
 const ExamType = Loadable(lazy(() => import('views/examType/examType')));
 
+const ResultView = Loadable(lazy(() => import('views/resultView/resultView')));
+
+
+
+
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -66,6 +71,10 @@ const MainRoutes = {
     {
       path: 'resultManagement', // Parent path
       element: <ResultManagement /> // Directly associate the component with the parent route
+    },
+    {
+      path: 'resultView', // Parent path
+      element: <ResultView /> // Directly associate the component with the parent route
     },
     {
       path: 'users', // Parent path

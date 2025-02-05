@@ -256,7 +256,7 @@ const TeacherCourseManagement = () => {
                       value={values.courseId}
                       fullWidth
                       onChange={handleChange}
-                      style={{ height: '50px', marginTop: '8px', borderRadius: '10px' }}
+                      style={{ height: '50px', marginTop: '25px', borderRadius: '10px' }}
                     >
                       <MenuItem disabled>Select Course</MenuItem>
                       {courses.map((item, i) => {
