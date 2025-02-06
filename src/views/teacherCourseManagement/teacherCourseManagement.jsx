@@ -24,6 +24,7 @@ import { FaEdit, FaSearch, FaTrash } from 'react-icons/fa';
 import { visuallyHidden } from '@mui/utils';
 import DeleteModal from 'modal/DeleteModal';
 import { getData, postData, putData } from 'apiHandler/apiHandler';
+import showToast from 'toastMessage/showToast';
 
 const style = {
   position: 'absolute',
@@ -101,6 +102,7 @@ const TeacherCourseManagement = () => {
     try {
       if (isEdit && editCardId) {
         const updatedData = await putData(`/TeacherxCourses/${editCardId}`, { ...values, teacherxCourseId: editCardId });
+        showToast('success', 'Succesfully Updated TeacherXCourse');
 
         // Optimistic UI update: Update the specific record in the state
         setTeacherxCourses((prevState) => {
@@ -108,11 +110,13 @@ const TeacherCourseManagement = () => {
         });
       } else {
         const newData = await postData('/TeacherxCourses', values);
+        showToast('success', 'Succesfully TeacherXCourse Assign');
       }
       handleClose();
       fetchData();
     } catch (err) {
       console.log(err);
+      showToast('error', 'Error Assigning TeacherXCourse');
     }
   };
 

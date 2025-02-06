@@ -18,6 +18,7 @@ import AuthFooter from 'ui-component/cards/AuthFooter';
 
 const Login = () => {
   const downMD = useMediaQuery((theme) => theme.breakpoints.down('md'));
+  
 
   return (
     <AuthWrapper1>

@@ -25,6 +25,7 @@ import { FaBriefcaseMedical, FaEdit, FaSearch, FaTrash } from 'react-icons/fa';
 import { visuallyHidden } from '@mui/utils';
 import DeleteModal from 'modal/DeleteModal';
 import { getData, postData, putData } from 'apiHandler/apiHandler';
+import showToast from 'toastMessage/showToast';
 
 const style = {
   position: 'absolute',
@@ -116,13 +117,16 @@ const TeacherManagement = () => {
     try {
       if (isEdit && editCardId) {
         await putData(`/teachers/${editCardId}`, { ...values, teacherId: editCardId });
+        showToast("success","Teacher Updated Successfully")
       } else {
         await postData('/teachers', values);
+        showToast("success","Teacher Created Successfully")
       }
       fetchData();
       handleClose();
     } catch (err) {
       console.log(err);
+      showToast("error","Error Adding Teacher")
     }
   };
 

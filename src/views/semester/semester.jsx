@@ -25,6 +25,7 @@ import { FaBriefcaseMedical, FaEdit, FaSearch, FaTrash } from 'react-icons/fa';
 import { visuallyHidden } from '@mui/utils';
 import DeleteModal from 'modal/DeleteModal';
 import { getData, postData, putData } from 'apiHandler/apiHandler';
+import showToast from 'toastMessage/showToast';
 
 const style = {
   position: 'absolute',
@@ -115,8 +116,10 @@ const SemesterName = () => {
     try {
       if (isEdit && editCardId) {
         await putData(`/semesters/${editCardId}`, { ...values, semesterId: editCardId });
+        showToast('success','Successfully Updated Student')
       } else {
         await postData('/semesters', values);
+        showToast('success','Successfully Added Student')
       }
       fetchData();
       handleClose();
