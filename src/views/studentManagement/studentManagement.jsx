@@ -105,8 +105,8 @@ const StudentManagement = () => {
     studentName: Yup.string().max(100).required('Student Name is required'),
     address: Yup.string().max(100).required('Address is required'),
     contactNo: Yup.string()
-    .matches(/^[0-9]{7}$|^[0-9]{10}$/, 'Contact Number must be 7 or 10 digits')
-    .required('Contact Number is required'),
+      .matches(/^[0-9]{7}$|^[0-9]{10}$/, 'Contact Number must be 7 or 10 digits')
+      .required('Contact Number is required'),
     facultyId: Yup.string().max(100).required('Faculty Name is required'),
     semesterId: Yup.string().max(100).required('Semester Name is required')
   });
@@ -285,13 +285,11 @@ const StudentManagement = () => {
                       style={{ height: '50px', marginTop: '25px', borderRadius: '10px' }}
                     >
                       <MenuItem disabled>Select Faculty</MenuItem>
-                      {faculty.map((item, i) => {
-                        return (
-                          <MenuItem value={item.facultyId} key={i}>
-                            {item.facultyName}
-                          </MenuItem>
-                        );
-                      })}
+                      {faculty.map((item, i) => (
+                        <MenuItem value={item.facultyId} key={i}>
+                          {item.facultyName}
+                        </MenuItem>
+                      ))}
                     </TextField>
 
                     <TextField
@@ -305,15 +303,16 @@ const StudentManagement = () => {
                       fullWidth
                       onChange={handleChange}
                       style={{ height: '50px', marginTop: '25px', borderRadius: '10px' }}
+                      disabled={!values.facultyId} // Disable if no faculty is selected
                     >
                       <MenuItem disabled>Select Semester</MenuItem>
-                      {semester.map((item, i) => {
-                        return (
+                      {semester
+                        .filter((item) => item.facultyId === values.facultyId) // Filter based on selected faculty
+                        .map((item, i) => (
                           <MenuItem value={item.semesterId} key={i}>
                             {item.semesterName}
                           </MenuItem>
-                        );
-                      })}
+                        ))}
                     </TextField>
                   </Grid>
                   <Grid item xs={12} style={{ textAlign: 'right' }}>

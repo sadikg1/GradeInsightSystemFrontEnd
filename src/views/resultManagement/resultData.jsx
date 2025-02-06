@@ -214,20 +214,23 @@ const ResultData = () => {
             <FormControl fullWidth>
               <InputLabel>Select Semester</InputLabel>
               <Select value={selectedSemester} onChange={handleSemesterChange} label="Select Semester">
-                {semesters.map((semester) => (
-                  <MenuItem key={semester.SemesterId} value={semester.SemesterId}>
-                    {semester.SemesterName}
-                  </MenuItem>
-                ))}
+                {apiSemester
+                  .filter((semester) => semester.facultyId === selectedFaculty) // Correct filtering
+                  .map((semester) => (
+                    <MenuItem key={semester.semesterId} value={semester.semesterId}>
+                      {semester.semesterName}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
           </Grid>
         )}
+
         {selectedSemester && (
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Select Exam Type</InputLabel>
-              <Select value={selectedExamType} onChange={(event) => handleExamTypeChange(event)} label="Select ExamType">
+              <Select value={selectedExamType} onChange={handleExamTypeChange} label="Select Exam Type">
                 {examType.map((exam) => (
                   <MenuItem key={exam.ExamTypeId} value={exam.ExamTypeId}>
                     {exam.ExamTypeName}

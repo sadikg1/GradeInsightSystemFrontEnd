@@ -25,7 +25,8 @@ const ResultView = () => {
       try {
         const response = await getData(`marks/student/${studentId}`);
         console.log('API Response:', response);
-
+         const studentDataResponse=await getData(`students/${studentId}`);
+         
         const studentData = response.data.find((student) => student.studentId === studentId);
 
         if (studentData) {

@@ -108,9 +108,6 @@ const TeacherCourseManagement = () => {
         });
       } else {
         const newData = await postData('/TeacherxCourses', values);
-
-        // Optimistic UI update: Add the new record to the state
-        setTeacherxCourses((prevState) => [...prevState, newData.data]);
       }
       handleClose();
       fetchData();
