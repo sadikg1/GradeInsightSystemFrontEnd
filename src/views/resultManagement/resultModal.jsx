@@ -3,6 +3,7 @@ import { Box, Button, Modal, TextField, Typography, Select, MenuItem, InputLabel
 import { getData, postData } from 'apiHandler/apiHandler';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
+import showToast from 'toastMessage/showToast';
 
 const style = {
   position: 'absolute',
@@ -45,10 +46,12 @@ const ResultModal = ({ isOpen, handleClose }) => {
     try {
       await postData('/marks', values);
       resetForm();
+      showToast("success","Marks added sucessfully")
       handleClose();
-      window.location.reload(); // Refresh data
+      window.location.reload(); 
     } catch (err) {
       console.log(err);
+      showToast("error","Error adding marks")
     }
   };
 
