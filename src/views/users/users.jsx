@@ -5,10 +5,10 @@ import UserCard from '../../ui-component/cards/UsersCard.jsx';
 import MainCard from '../../ui-component/cards/MainCard';
 import { HiUserAdd } from 'react-icons/hi';
 
-
 import UsersProfile from './usersprofile';
 import DeleteModal from 'modal/DeleteModal';
 import { getData, postData, putData } from 'apiHandler/apiHandler';
+import showToast from 'toastMessage/showToast.jsx';
 // import showToast from 'ToastMessage/showToast';
 
 const Users = () => {
@@ -80,16 +80,16 @@ const Users = () => {
         await putData(`/Users/${currentUser.userId}`, payload);
         const updatedUsers = await getData('/Users');
         setUsers(updatedUsers.data);
-        // showToast("success",User updated successfully)
+        showToast('success', 'User updated successfully');
       } else {
         const response = await postData('/Users', payload, { userPassword: values.newPassword });
         setUsers([...users, response.data]);
-        // showToast("success",User created successfully)
+        showToast('success', 'User created successfully');
       }
       setOpen(false);
       resetForm();
     } catch (error) {
-      // showToast('error', `Error saving User information. Please try again. `);
+      showToast('error', 'Error saving User information. Please try again.');
     }
   };
 
@@ -185,7 +185,7 @@ const Users = () => {
         name="users"
         messageName="User"
         fetchData={fetchData}
-        // showToast={showToast}
+        showToast={showToast}
       />
     </Paper>
   );
