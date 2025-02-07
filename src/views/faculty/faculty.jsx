@@ -27,6 +27,7 @@ import { visuallyHidden } from '@mui/utils';
 import DeleteModal from 'modal/DeleteModal';
 
 import { getData, postData, putData } from 'apiHandler/apiHandler';
+import showToast from 'toastMessage/showToast';
 
 const style = {
   position: 'absolute',
@@ -125,15 +126,18 @@ const Faculty = () => {
     try {
       if (isEdit && editCardId) {
         await putData(`/faculties/${editCardId}`, { ...values, facultyId: editCardId });
+        showToast("success","Successfully Updated Faculty");
         
       } else {
         await postData('/faculties', values);
+        showToast("success","Successfully Added Faculty");
 
       }
       fetchData();
       handleClose();
     } catch (err) {
      console.log(err)
+     showToast("error","Error Adding Faculty");
     }
   };
 

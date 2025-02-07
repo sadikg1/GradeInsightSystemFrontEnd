@@ -352,7 +352,7 @@ const StudentManagement = () => {
                   direction={orderBy === 'studentName' ? order : 'asc'}
                   onClick={() => handleRequestSort('studentName')}
                 >
-                  Name
+                  Student Name
                   {orderBy === 'studentName' ? (
                     <Box component="span" sx={visuallyHidden}>
                       {order === 'desc' ? 'sorted descending' : 'sorted ascending'}

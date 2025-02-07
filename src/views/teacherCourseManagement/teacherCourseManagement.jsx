@@ -293,7 +293,7 @@ const TeacherCourseManagement = () => {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <TableCell align="center" style={{ paddingLeft: '10px' }}>
+              <TableCell align="left" style={{ paddingLeft: '40px' }}>
                 Teacher Name
               </TableCell>
               <TableCell align="center">Course Name</TableCell>
@@ -318,7 +318,9 @@ const TeacherCourseManagement = () => {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((data) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={data.teacherxCourseId}>
-                  <TableCell align="center">{data.teacher.teacherName}</TableCell>
+                  <TableCell align="left" style={{ paddingLeft: '40px' }}>
+                    {data.teacher.teacherName}
+                  </TableCell>
                   <TableCell align="center">{data.course.courseName}</TableCell>
                   <TableCell align="center">{data.dateCreated.split('T')[0]}</TableCell>
                   <TableCell align="right" style={{ paddingRight: '5px' }}>

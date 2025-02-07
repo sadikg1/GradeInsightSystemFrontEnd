@@ -26,6 +26,7 @@ import { visuallyHidden } from '@mui/utils';
 import DeleteModal from 'modal/DeleteModal';
 
 import { getData, postData, putData } from 'apiHandler/apiHandler';
+import showToast from 'toastMessage/showToast';
 
 const style = {
   position: 'absolute',
@@ -124,13 +125,16 @@ const ExamType = () => {
     try {
       if (isEdit && editCardId) {
         await putData(`/examTypes/${editCardId}`, { ...values, examTypeId: editCardId });
+        showToast("success","Successfully Updated ExamType");
       } else {
         await postData('/examTypes', values);
+        showToast("success","Successfully Added ExamType");
       }
       fetchData();
       handleClose();
     } catch (err) {
       console.log(err);
+      showToast("error","Error Adding ExamType");
     }
   };
 

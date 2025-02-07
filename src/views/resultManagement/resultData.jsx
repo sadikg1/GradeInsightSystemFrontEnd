@@ -251,49 +251,74 @@ const ResultData = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell align="left">S.N</TableCell>
                 <TableCell align="center">Student Name</TableCell>
                 {filteredCourses.map((course) => (
                   <TableCell key={course.courseId} align="center">
                     {course.courseName}
                   </TableCell>
                 ))}
+                <TableCell align="center">Average (%)</TableCell>
+                <TableCell align="center">Result</TableCell>
                 <TableCell align="center">View Result</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredStudents.map((student) => (
-                <TableRow key={student.StudentId}>
-                  <TableCell align="center">{student.StudentName}</TableCell>
-                  {filteredCourses.map((course) => (
-                    <TableCell key={course.courseId} align="center">
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {student.marks[course.courseId] !== undefined ? student.marks[course.courseId] : '-'}
-                      </Box>
+              {filteredStudents.map((student) => {
+                const totalMarks = filteredCourses.reduce((sum, course) => {
+                  const mark = student.marks[course.courseId] || 0; // Handle missing marks
+                  return sum + mark;
+                }, 0);
+
+                const totalFullMarks = filteredCourses.length * 100; // Assuming full marks = 100 for each course
+                const average = totalFullMarks > 0 ? (totalMarks / totalFullMarks) * 100 : 0;
+
+                const isPass = filteredCourses.every((course) => (student.marks[course.courseId] || 0) >= 40);
+
+                return (
+                  <TableRow key={student.StudentId}>
+                    <TableCell align="left">{students.indexOf(student) + 1}</TableCell>
+                    <TableCell align="center">{student.StudentName}</TableCell>
+                    {filteredCourses.map((course) => (
+                      <TableCell key={course.courseId} align="center">
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          {student.marks[course.courseId] !== undefined ? student.marks[course.courseId] : '-'}
+                        </Box>
+                      </TableCell>
+                    ))}
+                    {/* Average Column */}
+                    <TableCell align="center">{average.toFixed(2)}%</TableCell>
+
+                    {/* Result Column */}
+                    <TableCell align="center" style={{ fontWeight: 'bold', color: isPass ? 'green' : 'red' }}>
+                      {isPass ? 'Pass' : 'Fail'}
                     </TableCell>
-                  ))}
-                  <TableCell align="center">
-                    <Button
-                      variant="outlined"
-                      startIcon={<FaEye size={15} style={{ color: '#2397F3' }} />}
-                      sx={{
-                        color: '#2397F3',
-                        borderColor: '#2397F3',
-                        '&:hover': { borderColor: '#2397F3', color: '#2397F3' },
-                        marginRight: 1,
-                        fontSize: '0.75rem',
-                        padding: '4px 8px'
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent row click when button is clicked
-                        console.log('Student passed to handleView:', student);
-                        handleView(student); // Your edit logic
-                      }}
-                    >
-                      View
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+
+                    {/* View Result Button */}
+                    <TableCell align="center">
+                      <Button
+                        variant="outlined"
+                        startIcon={<FaEye size={15} style={{ color: '#2397F3' }} />}
+                        sx={{
+                          color: '#2397F3',
+                          borderColor: '#2397F3',
+                          '&:hover': { borderColor: '#2397F3', color: '#2397F3' },
+                          marginRight: 1,
+                          fontSize: '0.75rem',
+                          padding: '4px 8px'
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log('Student passed to handleView:', student);
+                          handleView(student);
+                        }}
+                      >
+                        View
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>

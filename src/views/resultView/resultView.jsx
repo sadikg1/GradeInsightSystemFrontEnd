@@ -13,6 +13,7 @@ const ResultView = () => {
   const { studentId } = location.state || {}; // Handle possible undefined state
 
   const [studentData, setStudentData] = useState(null);
+  
   const [courseData, setCourseData] = useState([]);
   const [preBoardStatus, setPreBoardStatus] = useState(''); // State for Pre-board status
   const [internalStatus, setInternalStatus] = useState(''); // State for Internal status
@@ -25,8 +26,8 @@ const ResultView = () => {
       try {
         const response = await getData(`marks/student/${studentId}`);
         console.log('API Response:', response);
-         const studentDataResponse=await getData(`students/${studentId}`);
-         
+        const studentDataResponse = await getData(`students/${studentId}`);
+
         const studentData = response.data.find((student) => student.studentId === studentId);
 
         if (studentData) {
@@ -49,8 +50,6 @@ const ResultView = () => {
             setPreBoardAverage(preBoardAveragePercentage);
           }
 
-          // Internal Exam status and average calculation
-          // Internal Exam status and average calculation
           const internalMarks = studentData.marks.filter((mark) => mark.examTypeName === 'Internal Exam');
 
           if (internalMarks.length === 0) {
@@ -148,7 +147,7 @@ const ResultView = () => {
       <div style={{ padding: '20px', maxWidth: '800px', margin: 'auto' }}>
         {/* Profile Section */}
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <h3>Student Profile</h3>
+          <h2>Student Marksheet</h2>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Circle with initials */}
@@ -160,8 +159,8 @@ const ResultView = () => {
                 width: '100px',
                 height: '100px',
                 borderRadius: '50%',
-                backgroundColor: '#4CAF50',
-                color: '#fff',
+                backgroundColor: '#e8f5e9',
+                color: '#2e7d32',
                 fontSize: '40px',
                 fontWeight: 'bold',
                 marginRight: '20px'
@@ -172,7 +171,7 @@ const ResultView = () => {
 
             {/* Student information */}
             <div style={{ textAlign: 'left' }}>
-              <h4>Student Name: {studentData.studentName}</h4>
+              <h3>Student Name: {studentData.studentName}</h3>
               <p>Faculty: {studentData.facultyName}</p>
               <p>Semester: {studentData.semesterName}</p>
             </div>
@@ -180,12 +179,14 @@ const ResultView = () => {
         </div>
 
         {/* Marks Table for Pre-board Exam */}
-        <h4>Pre-board Exam</h4>
+        <h2 style={{ textAlign: 'center' }}>Pre-board Exam</h2>
         <table border="1" cellPadding="10" style={{ width: '100%', marginBottom: '20px' }}>
           <thead>
             <tr>
               <th>Course Name</th>
-              <th>Marks</th>
+              <th>Pass Marks</th>
+              <th>Full Marks</th>
+              <th>Obtained Marks</th>
             </tr>
           </thead>
           <tbody>
@@ -194,24 +195,28 @@ const ResultView = () => {
               .map((mark, index) => (
                 <tr key={index}>
                   <td>{mark.courseName}</td>
-                  <td>{mark.mark}</td>
+                  <td style={{ textAlign: 'center' }}>40</td>
+                  <td style={{ textAlign: 'center' }}>100</td>
+                  <td style={{ textAlign: 'center' }}>{mark.mark}</td>
                 </tr>
               ))}
           </tbody>
         </table>
         {/* Status and Average for Pre-board Exam */}
-        <h5 style={{ color: preBoardStatus === 'Pass' ? 'green' : preBoardStatus === 'Fail' ? 'red' : 'gray' }}>
+        <h2 style={{ color: preBoardStatus === 'Pass' ? 'green' : preBoardStatus === 'Fail' ? 'red' : 'gray' }}>
           Status: {preBoardStatus}
-        </h5>
-        <h5>Average: {preBoardAverage.toFixed(2)}%</h5>
+        </h2>
+        <h3>Average: {preBoardAverage.toFixed(2)}%</h3>
 
         {/* Marks Table for Internal Exam */}
-        <h4>Internal Exam</h4>
+        <h2 style={{ textAlign: 'center' }}>Internal Exam</h2>
         <table border="1" cellPadding="10" style={{ width: '100%', marginBottom: '20px' }}>
           <thead>
             <tr>
               <th>Course Name</th>
-              <th>Marks</th>
+              <th>Pass Marks</th>
+              <th>Full Marks</th>
+              <th>Obtained Marks</th>
             </tr>
           </thead>
           <tbody>
@@ -220,17 +225,19 @@ const ResultView = () => {
               .map((mark, index) => (
                 <tr key={index}>
                   <td>{mark.courseName}</td>
-                  <td>{mark.mark}</td>
+                  <td style={{ textAlign: 'center' }}>40</td>
+                  <td style={{ textAlign: 'center' }}>100</td>
+                  <td style={{ textAlign: 'center' }}>{mark.mark}</td>
                 </tr>
               ))}
           </tbody>
         </table>
         {/* Status and Average for Internal Exam */}
-        <h5 style={{ color: internalStatus === 'Pass' ? 'green' : internalStatus === 'Fail' ? 'red' : 'gray' }}>
+        <h2 style={{ color: internalStatus === 'Pass' ? 'green' : internalStatus === 'Fail' ? 'red' : 'gray' }}>
           Status: {internalStatus}
-        </h5>
+        </h2>
 
-        <h5>Average: {internalAverage.toFixed(2)}%</h5>
+        <h3>Average: {internalAverage.toFixed(2)}%</h3>
 
         {/* Bar Chart */}
         <h4>Marks Comparison - Bar Chart</h4>
