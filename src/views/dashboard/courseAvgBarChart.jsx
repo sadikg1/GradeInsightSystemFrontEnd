@@ -36,9 +36,9 @@ const CourseAveragesChart = () => {
   }, [selectedFaculty, selectedSemester, courseData]);
 
   return (
-    <Card sx={{ p: 3, height: 450, borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+    <Card sx={{ p: 3, height: 450, border: '2px solid #ccc', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
       {/* Title */}
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: '#333', mb: 3 }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: '#333', mb: 3,textAlign:'center' }}>
         Course Average Marks
       </Typography>
 

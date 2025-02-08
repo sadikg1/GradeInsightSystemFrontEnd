@@ -129,7 +129,7 @@ const MarksCards = () => {
   ];
 
   return (
-    <Card sx={{ borderRadius: '10px', height: 450 }}>
+    <Card sx={{ border: '2px solid #ccc',borderRadius: '10px', height: 450 }}>
       <CardContent>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, color: '#333', mb: 3, textAlign: 'center' }}>
           Marks Insight
