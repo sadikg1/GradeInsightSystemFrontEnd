@@ -13,7 +13,8 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
-import { Paper } from "@mui/material";
+import { Button, Paper } from "@mui/material";
+import { FaChartLine, FaBrain } from "react-icons/fa";
 
 // Registering necessary chart components
 ChartJS.register(
@@ -38,6 +39,8 @@ const ResultView = () => {
   const [internalStatus, setInternalStatus] = useState(""); // State for Internal status
   const [preBoardAverage, setPreBoardAverage] = useState(0); // Average for Pre-board
   const [internalAverage, setInternalAverage] = useState(0); // Average for Internal Exam
+  const [isPrButtonClicked, setIsPrButtonClicked] = useState(false);
+  const [isTmButtonClicked, setIsTmButtonClicked] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,6 +112,7 @@ const ResultView = () => {
 
     fetchData();
   }, [studentId]);
+  // console.log("studentId", studentId);
 
   if (!studentId) {
     return <h2>No student data available</h2>;
@@ -187,6 +191,19 @@ const ResultView = () => {
         tension: 0.1,
       },
     ],
+  };
+  const totalPreBoardMarks = preBoardMarks.reduce((acc, mark) => acc + mark, 0);
+  const totalInternalMarks = internalMarks.reduce((acc, mark) => acc + mark, 0);
+  const handleTrain = () => {
+    console.log("Train Model Clicked");
+  };
+  const handlePredict = (studentId, totalInternalMarks, totalPreBoardMarks) => {
+    console.log(
+      "Data received: ",
+      studentId,
+      totalInternalMarks,
+      totalPreBoardMarks
+    );
   };
 
   return (
@@ -282,6 +299,7 @@ const ResultView = () => {
         >
           Status: {preBoardStatus}
         </h2>
+        <h3>Total Marks: {totalPreBoardMarks}</h3>
         <h3>Average: {preBoardAverage.toFixed(2)}%</h3>
 
         {/* Marks Table for Internal Exam */}
@@ -325,8 +343,100 @@ const ResultView = () => {
         >
           Status: {internalStatus}
         </h2>
-
+        <h3>Total Marks: {totalInternalMarks}</h3>
         <h3>Average: {internalAverage.toFixed(2)}%</h3>
+        <Button
+          variant="outlined"
+          startIcon={<FaBrain size={15} />}
+          disabled={isTmButtonClicked}
+          sx={{
+            color: "#2563EB",
+            borderColor: "#2563EB",
+            backgroundColor: "#F0F7FF",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            "&:disabled": {
+              backgroundColor: "#DBEAFE",
+              borderColor: "#1E40AF",
+              color: "#1E40AF",
+            },
+            fontSize: "0.85rem",
+            padding: "6px 12px",
+            minWidth: "130px",
+            textAlign: "center",
+            margin: "auto",
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsTmButtonClicked(true);
+            handleTrain();
+          }}
+        >
+          {isTmButtonClicked ? "Training..." : "Train Model"}
+        </Button>
+
+        <h2 style={{ textAlign: "center" }}>Exam Type Total Marks</h2>
+        <table
+          border="1"
+          cellPadding="10"
+          style={{ width: "100%", marginBottom: "20px" }}
+        >
+          <thead>
+            <tr>
+              <th>Exam Type</th>
+              <th>Total Marks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Internal Exam</td>
+              <td style={{ textAlign: "center" }}>{totalInternalMarks}</td>
+            </tr>
+            <tr>
+              <td>Pre-board Exam</td>
+              <td style={{ textAlign: "center" }}>{totalPreBoardMarks}</td>
+            </tr>
+            <tr>
+              <td>
+                <span>
+                  Board Exam
+                  <Button
+                    variant="outlined"
+                    startIcon={<FaChartLine size={15} />}
+                    sx={{
+                      color: "#fff",
+                      borderColor: "#239F48",
+                      backgroundColor: "#239F48",
+
+                      alignItems: "center",
+                      "&:hover": {
+                        backgroundColor: "transparent",
+                        borderColor: "#2BA84A",
+                        color: "#2BA84A",
+                      },
+                      fontSize: "0.85rem",
+                      minWidth: "130px",
+                      textAlign: "center",
+                      marginLeft: "15px",
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePredict(
+                        studentId,
+                        totalInternalMarks,
+                        totalPreBoardMarks
+                      );
+                    }}
+                  >
+                    Predict Score
+                  </Button>
+                </span>
+              </td>
+              <td style={{ textAlign: "center" }}></td>
+            </tr>
+          </tbody>
+        </table>
 
         <h2 style={{ textAlign: "center" }}>Marks Analysis</h2>
         {/* Bar Chart */}
