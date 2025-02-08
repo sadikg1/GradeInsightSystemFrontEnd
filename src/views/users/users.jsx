@@ -117,7 +117,7 @@ const Users = () => {
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', border: '2px solid #ccc', borderRadius: '10px' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <MainCard
           title={

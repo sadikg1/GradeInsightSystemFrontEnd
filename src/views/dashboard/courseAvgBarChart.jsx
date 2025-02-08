@@ -11,11 +11,8 @@ const CourseAveragesChart = () => {
   const [courseData, setCourseData] = useState([]);
 
   // Get unique faculties and semesters based on the fetched data
-  const faculties = [...new Set(courseData.map(item => item.faculty))];
-  const semesters = [...new Set(courseData
-    .filter(item => item.faculty === selectedFaculty)
-    .map(item => item.semester)
-  )];
+  const faculties = [...new Set(courseData.map((item) => item.faculty))];
+  const semesters = [...new Set(courseData.filter((item) => item.faculty === selectedFaculty).map((item) => item.semester))];
 
   // Fetch course data from backend
   useEffect(() => {
@@ -23,21 +20,18 @@ const CourseAveragesChart = () => {
       try {
         const response = await getData('marks/courseAverages');
         setCourseData(response.data);
-        console.log("course avg: ",setCourseData);
+        console.log('course avg: ', setCourseData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
-},[]); // This runs only once on component mount
+  }, []); // This runs only once on component mount
 
   // Update filtered data when filters change
   useEffect(() => {
-    const filtered = courseData.filter(item => 
-      item.faculty === selectedFaculty && 
-      item.semester === selectedSemester
-    );
+    const filtered = courseData.filter((item) => item.faculty === selectedFaculty && item.semester === selectedSemester);
     setFilteredData(filtered);
   }, [selectedFaculty, selectedSemester, courseData]);
 
@@ -58,8 +52,10 @@ const CourseAveragesChart = () => {
               onChange={(e) => setSelectedFaculty(e.target.value)}
               sx={{ bgcolor: '#f5f5f5', borderRadius: '8px' }}
             >
-              {faculties.map(faculty => (
-                <MenuItem key={faculty} value={faculty}>{faculty}</MenuItem>
+              {faculties.map((faculty) => (
+                <MenuItem key={faculty} value={faculty}>
+                  {faculty}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -72,8 +68,10 @@ const CourseAveragesChart = () => {
               onChange={(e) => setSelectedSemester(e.target.value)}
               sx={{ bgcolor: '#f5f5f5', borderRadius: '8px' }}
             >
-              {semesters.map(semester => (
-                <MenuItem key={semester} value={semester}>{semester}</MenuItem>
+              {semesters.map((semester) => (
+                <MenuItem key={semester} value={semester}>
+                  {semester}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -89,27 +87,24 @@ const CourseAveragesChart = () => {
               dataKey="course"
               tick={{ fill: '#666', fontSize: 12 }}
               axisLine={{ stroke: '#ccc' }}
+              tickFormatter={(value) => (value.length > 10 ? value.substring(0, 10) + '...' : value)}
             />
-            <YAxis
-              domain={[0, 100]}
-              tick={{ fill: '#666', fontSize: 12 }}
-              axisLine={{ stroke: '#ccc' }}
-            />
-            <Tooltip 
+            <YAxis domain={[0, 100]} tick={{ fill: '#666', fontSize: 12 }} axisLine={{ stroke: '#ccc' }} />
+            <Tooltip
               contentStyle={{
                 borderRadius: '8px',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                 border: '1px solid #eee'
-              }} 
+              }}
             />
             <Bar
               dataKey="avg"
               fill="#ef6c00"
               radius={[4, 4, 0, 0]}
-              label={{ 
-                position: 'top', 
+              label={{
+                position: 'top',
                 fill: '#666',
-                fontSize: 12 
+                fontSize: 12
               }}
             />
           </BarChart>

@@ -125,16 +125,16 @@ const ExamType = () => {
     try {
       if (isEdit && editCardId) {
         await putData(`/examTypes/${editCardId}`, { ...values, examTypeId: editCardId });
-        showToast("success","Successfully Updated ExamType");
+        showToast('success', 'Successfully Updated ExamType');
       } else {
         await postData('/examTypes', values);
-        showToast("success","Successfully Added ExamType");
+        showToast('success', 'Successfully Added ExamType');
       }
       fetchData();
       handleClose();
     } catch (err) {
       console.log(err);
-      showToast("error","Error Adding ExamType");
+      showToast('error', 'Error Adding ExamType');
     }
   };
 
@@ -153,7 +153,17 @@ const ExamType = () => {
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', paddingLeft: '15px', paddingRight: '15px' }}>
+    <Paper
+      sx={{
+        width: '100%',
+        overflow: 'hidden',
+        height: '100%',
+        paddingLeft: '15px',
+        paddingRight: '15px',
+        border: '2px solid #ccc',
+        borderRadius: '10px'
+      }}
+    >
       <div
         style={{
           display: 'flex',

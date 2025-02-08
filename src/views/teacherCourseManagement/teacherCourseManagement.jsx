@@ -142,7 +142,17 @@ const TeacherCourseManagement = () => {
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', paddingLeft: '15px', paddingRight: '15px' }}>
+    <Paper
+      sx={{
+        width: '100%',
+        overflow: 'hidden',
+        height: '100%',
+        paddingLeft: '15px',
+        paddingRight: '15px',
+        border: '2px solid #ccc',
+        borderRadius: '10px'
+      }}
+    >
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '13px', marginRight: '10px' }}>
         <div>
           <Typography style={{ marginLeft: '20px', marginTop: '10px' }} fontWeight="bold" variant="h3">

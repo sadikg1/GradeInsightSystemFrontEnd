@@ -13,7 +13,7 @@ const ResultView = () => {
   const { studentId } = location.state || {}; // Handle possible undefined state
 
   const [studentData, setStudentData] = useState(null);
-  
+
   const [courseData, setCourseData] = useState([]);
   const [preBoardStatus, setPreBoardStatus] = useState(''); // State for Pre-board status
   const [internalStatus, setInternalStatus] = useState(''); // State for Internal status
@@ -143,7 +143,17 @@ const ResultView = () => {
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', paddingLeft: '15px', paddingRight: '15px' }}>
+    <Paper
+      sx={{
+        width: '100%',
+        overflow: 'hidden',
+        height: '100%',
+        paddingLeft: '15px',
+        paddingRight: '15px',
+        border: '2px solid #ccc',
+        borderRadius: '10px'
+      }}
+    >
       <div style={{ padding: '20px', maxWidth: '800px', margin: 'auto' }}>
         {/* Profile Section */}
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
@@ -239,12 +249,15 @@ const ResultView = () => {
 
         <h3>Average: {internalAverage.toFixed(2)}%</h3>
 
+        <h2 style={{ textAlign: 'center' }}>Marks Analysis</h2>
         {/* Bar Chart */}
         <h4>Marks Comparison - Bar Chart</h4>
+        <p style={{fontFamily:"-moz-initial"}}>Performance Analysis: Pre-board vs. Internal Exams</p>
         <Bar data={barChartData} options={{ responsive: true }} />
 
         {/* Line Chart */}
         <h4>Marks Comparison - Line Chart</h4>
+        <p style={{fontFamily:"-moz-initial"}}>Trend Analysis: Exam Performance Over Subjects</p>
         <Line data={lineChartData} options={{ responsive: true }} />
       </div>
     </Paper>
