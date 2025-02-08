@@ -1,45 +1,28 @@
-import { lazy } from "react";
+import { lazy } from 'react';
+import MainLayout from 'layout/MainLayout';
+import Loadable from 'ui-component/Loadable';
+import { Navigate } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute';
 
-// project imports
-import MainLayout from "layout/MainLayout";
-import Loadable from "ui-component/Loadable";
-import { Navigate } from "react-router-dom";
-import { element } from "prop-types";
-import ProtectedRoute from "./ProtectedRoute";
-
-// dashboard routing
-const Dashboard = Loadable(lazy(() => import("views/dashboard")));
-const StudentManagement = Loadable(
-  lazy(() => import("views/studentManagement/studentManagement"))
-);
-const TeacherManagement = Loadable(
-  lazy(() => import("views/teacherManagement/teacherManagement"))
-);
-const CourseManagement = Loadable(
-  lazy(() => import("views/courseManagement/courseManagement"))
-);
-const TeacherCourseManagement = Loadable(
-  lazy(() => import("views/teacherCourseManagement/teacherCourseManagement"))
-);
-
-const ResultManagement = Loadable(
-  lazy(() => import("views/resultManagement/resultManagement"))
-);
-const UserManagement = Loadable(lazy(() => import("views/users/users")));
-
-const Faculty = Loadable(lazy(() => import("views/faculty/faculty")));
-const Semester = Loadable(lazy(() => import("views/semester/semester")));
-const ExamType = Loadable(lazy(() => import("views/examType/examType")));
-const UserType = Loadable(lazy(() => import("views/users/userstypes")));
-
-const ResultView = Loadable(lazy(() => import("views/resultView/resultView")));
+// Lazy-loaded components
+const Dashboard = Loadable(lazy(() => import('views/dashboard')));
+const StudentManagement = Loadable(lazy(() => import('views/studentManagement/studentManagement')));
+const TeacherManagement = Loadable(lazy(() => import('views/teacherManagement/teacherManagement')));
+const CourseManagement = Loadable(lazy(() => import('views/courseManagement/courseManagement')));
+const TeacherCourseManagement = Loadable(lazy(() => import('views/teacherCourseManagement/teacherCourseManagement')));
+const ResultManagement = Loadable(lazy(() => import('views/resultManagement/resultManagement')));
+const UserManagement = Loadable(lazy(() => import('views/users/users')));
+const Faculty = Loadable(lazy(() => import('views/faculty/faculty')));
+const Semester = Loadable(lazy(() => import('views/semester/semester')));
+const ExamType = Loadable(lazy(() => import('views/examType/examType')));
+const ResultView = Loadable(lazy(() => import('views/resultView/resultView')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
-  path: "/",
+  path: '/',
   element: (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={[1,2,3]}>
       <MainLayout />
     </ProtectedRoute>
   ),
@@ -49,55 +32,94 @@ const MainRoutes = {
       element: <Navigate to="/auth/login" replace />,
     },
     {
-      path: "dashboard",
-      element: <Dashboard />,
+      path: 'dashboard',
+      element: (
+        <ProtectedRoute allowedRoles={[1, 3, 2]}>
+          <Dashboard />
+        </ProtectedRoute>
+      )
     },
     {
-      path: "studentManagement",
-      element: <StudentManagement />, // Directly associate the component with the parent route
+      path: 'studentManagement',
+      element: (
+        <ProtectedRoute allowedRoles={[1]}>
+          <StudentManagement />
+        </ProtectedRoute>
+      )
     },
     {
-      path: "teacherManagement", // Parent path
-      element: <TeacherManagement />, // Directly associate the component with the parent route
+      path: 'teacherManagement',
+      element: (
+        <ProtectedRoute allowedRoles={[1]}>
+          <TeacherManagement />
+        </ProtectedRoute>
+      )
     },
     {
-      path: "courseManagement", // Parent path
-      element: <CourseManagement />, // Directly associate the component with the parent route
+      path: 'courseManagement',
+      element: (
+        <ProtectedRoute allowedRoles={[2,3]}>
+          <CourseManagement />
+        </ProtectedRoute>
+      )
     },
     {
-      path: "teacherCourseManagement", // Parent path
-      element: <TeacherCourseManagement />, // Directly associate the component with the parent route
-    },
-
-    {
-      path: "faculty", // Empty path for default rendering under 'studentManagement'
-      element: <Faculty />,
-    },
-    {
-      path: "semester", // Empty path for default rendering under 'studentManagement'
-      element: <Semester />,
+      path: 'teacherCourseManagement',
+      element: (
+        <ProtectedRoute allowedRoles={[2,3]}>
+          <TeacherCourseManagement />
+        </ProtectedRoute>
+      )
     },
     {
-      path: "examType", // Empty path for default rendering under 'studentManagement'
-      element: <ExamType />,
+      path: 'faculty',
+      element: (
+        <ProtectedRoute allowedRoles={[2]}>
+          <Faculty />
+        </ProtectedRoute>
+      )
     },
     {
-      path: "userType", // Empty path for default rendering under 'studentManagement'
-      element: <UserType />,
+      path: 'semester',
+      element: (
+        <ProtectedRoute allowedRoles={[2]}>
+          <Semester />
+        </ProtectedRoute>
+      )
     },
     {
-      path: "resultManagement", // Parent path
-      element: <ResultManagement />, // Directly associate the component with the parent route
+      path: 'examType',
+      element: (
+        <ProtectedRoute allowedRoles={[2]}>
+          <ExamType />
+        </ProtectedRoute>
+      )
     },
     {
-      path: "resultView", // Parent path
-      element: <ResultView />, // Directly associate the component with the parent route
+      path: 'resultManagement',
+      element: (
+        <ProtectedRoute allowedRoles={[1,3]}>
+          <ResultManagement />
+        </ProtectedRoute>
+      )
     },
     {
-      path: "users", // Parent path
-      element: <UserManagement></UserManagement>,
+      path: 'resultView',
+      element: (
+        <ProtectedRoute allowedRoles={[1,2,3]}>
+          <ResultView />
+        </ProtectedRoute>
+      )
     },
-  ],
+    {
+      path: 'users',
+      element: (
+        <ProtectedRoute allowedRoles={[1]}>
+          <UserManagement />
+        </ProtectedRoute>
+      )
+    }
+  ]
 };
 
 export default MainRoutes;
