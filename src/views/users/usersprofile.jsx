@@ -35,12 +35,13 @@ const UsersProfile = ({ initialValues, userTypes, onSubmit, onPasswordChange, on
       });
       
       const passwordValidationSchema = Yup.object({
-        newPassword: Yup.string()
-          .matches(
-            /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/,
-            'Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, one number, and one special character'
-          )
-          .required('Required'),
+  newPassword: Yup.string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/,
+      'Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, one number, and one special character'
+    )
+    .required('Required'),
+
         confirmPassword: Yup.string()
           .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
           .required('Required')

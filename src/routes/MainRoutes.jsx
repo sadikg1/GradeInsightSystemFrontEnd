@@ -5,6 +5,7 @@ import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import { Navigate } from 'react-router-dom';
 import { element } from 'prop-types';
+import ProtectedRoute from './ProtectedRoute';
 
 // dashboard routing
 const Dashboard = Loadable(lazy(() => import('views/dashboard')));
@@ -29,7 +30,11 @@ const ResultView = Loadable(lazy(() => import('views/resultView/resultView')));
 
 const MainRoutes = {
   path: '/',
-  element: <MainLayout />,
+  element:  (
+    <ProtectedRoute>
+      <MainLayout />
+    </ProtectedRoute>
+  ),
   children: [
     {
       path: '/',

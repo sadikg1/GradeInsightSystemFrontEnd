@@ -30,7 +30,12 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+
+import showToast from 'toastMessage/showToast';
+import { getAuth } from 'apiHandler/apiHandler';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -45,12 +50,26 @@ const AuthLogin = ({ ...others }) => {
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  const headers = {
-    userEmail: values.email,
-    userPassword: values.password
-  };
-  const handleSubmit = () => {
-    navigate('/dashboard');
+  // const headers = {
+  //   userEmail: values.email,
+  //   userPassword: values.password
+  // };
+  const handleSubmit = async(values) => {
+    const headers = {
+      userEmail: values.email,
+      userPassword: values.password
+    };
+
+    try {
+      const response = await getAuth('authLogin', headers);
+      Cookies.set('user', JSON.stringify(response.data), { expires: 7 });
+      navigate('/dashboard');
+      showToast('success', 'Login Successful');
+    }
+    catch (err) {
+      showToast('error', 'Login failed');
+    }
+   
   };
   const handleMouseDownPassword = (event) => {
     event.preventDefault();

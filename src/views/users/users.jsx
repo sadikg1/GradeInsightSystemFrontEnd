@@ -1,14 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Grid, Box, Button, Typography, Dialog, DialogContent, DialogTitle, IconButton, Paper, CircularProgress } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import UserCard from '../../ui-component/cards/UsersCard.jsx';
-import MainCard from '../../ui-component/cards/MainCard';
-import { HiUserAdd } from 'react-icons/hi';
+import React, { useEffect, useState } from "react";
+import {
+  Grid,
+  Box,
+  Button,
+  Typography,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import UserCard from "../../ui-component/cards/UsersCard.jsx";
+import MainCard from "../../ui-component/cards/MainCard";
+import { HiUserAdd } from "react-icons/hi";
 
-
-import UsersProfile from './usersprofile';
-import DeleteModal from 'modal/DeleteModal';
-import { getData, postData, putData } from 'apiHandler/apiHandler';
+import UsersProfile from "./usersprofile";
+import DeleteModal from "modal/DeleteModal";
+import { getData, postData, putData } from "apiHandler/apiHandler";
+import showToast from "toastMessage/showToast.jsx";
 // import showToast from 'ToastMessage/showToast';
 
 const Users = () => {
@@ -23,12 +34,15 @@ const Users = () => {
   const fetchData = async () => {
     setLoader(true);
     try {
-      const [usersResponse, userTypesResponse] = await Promise.all([getData('/Users'), getData('/UserTypes')]);
+      const [usersResponse, userTypesResponse] = await Promise.all([
+        getData("/Users"),
+        getData("/UserTypes"),
+      ]);
       setUsers(usersResponse.data);
       setUserTypes(userTypesResponse.data);
       setLoader(false);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -38,7 +52,7 @@ const Users = () => {
 
   const getUserTypeName = (userTypeId) => {
     const userType = userTypes.find((type) => type.userTypeId === userTypeId);
-    return userType ? userType.userTypeName : 'Unknown';
+    return userType ? userType.userTypeName : "Unknown";
   };
 
   const handleDialogOpen = (user = null) => {
@@ -47,7 +61,7 @@ const Users = () => {
   };
 
   const handleDialogClose = (event, reason) => {
-    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+    if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
       setOpen(false);
     }
   };
@@ -64,39 +78,45 @@ const Users = () => {
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
-      const userType = userTypes.find((type) => type.userTypeName === values.userTypeName);
+      const userType = userTypes.find(
+        (type) => type.userTypeName === values.userTypeName
+      );
       if (!userType) {
-        throw new Error('Invalid department selected');
+        throw new Error("Invalid department selected");
       }
 
       const payload = {
-        userId: values.userId,
         userTypeId: userType.userTypeId,
         userName: values.userName,
         userFullName: values.userFullName,
-        userEmail: values.userEmail
+        userEmail: values.userEmail,
       };
       if (currentUser) {
-        await putData(`/Users/${currentUser.userId}`, payload);
-        const updatedUsers = await getData('/Users');
+        await putData(`/Users/${currentUser.userId}`, {
+          ...payload,
+          userId: values.userId,
+        });
+        const updatedUsers = await getData("/Users");
         setUsers(updatedUsers.data);
-        // showToast("success",User updated successfully)
+        showToast("success", "User updated successfully");
       } else {
-        const response = await postData('/Users', payload, { userPassword: values.newPassword });
+        const response = await postData("/Users", payload, {
+          userPassword: values.newPassword,
+        });
         setUsers([...users, response.data]);
-        // showToast("success",User created successfully)
+        showToast("success", "User created successfully");
       }
       setOpen(false);
       resetForm();
     } catch (error) {
-      // showToast('error', `Error saving User information. Please try again. `);
+      showToast("error", `Error saving User information. Please try again. `);
     }
   };
 
   const handlePasswordChange = async (values, { resetForm }) => {
     try {
       const headers = {
-        userPassword: values.newPassword
+        userPassword: values.newPassword,
       };
 
       const payload = {
@@ -104,7 +124,7 @@ const Users = () => {
         userTypeId: currentUser.userTypeId,
         userName: currentUser.userName,
         userFullName: currentUser.userFullName,
-        userEmail: currentUser.userEmail
+        userEmail: currentUser.userEmail,
       };
 
       await putData(`/Users/${currentUser.userId}`, payload, headers);
@@ -112,18 +132,27 @@ const Users = () => {
       setOpen(false);
       resetForm();
     } catch (error) {
-      console.error('Error changing password:', error);
+      console.error("Error changing password:", error);
     }
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%' }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <Paper sx={{ width: "100%", overflow: "hidden", height: "100%" }}>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
         <MainCard
           title={
-            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Typography variant="h3">All Users</Typography>
-              <Button variant="contained" color="primary" endIcon={<HiUserAdd />} onClick={() => handleDialogOpen()}>
+              <Button
+                variant="contained"
+                color="primary"
+                endIcon={<HiUserAdd />}
+                onClick={() => handleDialogOpen()}
+              >
                 User Records
               </Button>
             </Box>
@@ -131,7 +160,12 @@ const Users = () => {
           sx={{ padding: 2 }}
         >
           {Loader ? (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100px">
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="100px"
+            >
               <CircularProgress />
             </Box>
           ) : (
@@ -155,21 +189,29 @@ const Users = () => {
       </Box>
       <Dialog open={open} onClose={handleDialogClose} maxWidth="md" fullWidth>
         <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h4">{currentUser ? 'Edit User' : 'Add User'}</Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h4">
+              {currentUser ? "Edit User" : "Add User"}
+            </Typography>
             <IconButton onClick={() => setOpen(false)}>
               <CloseIcon />
             </IconButton>
           </Box>
         </DialogTitle>
-        <DialogContent sx={{ padding: '16px' }}>
+        <DialogContent sx={{ padding: "16px" }}>
           <UsersProfile
             initialValues={{
-              userId: currentUser?.userId || '',
-              userName: currentUser?.userName || '',
-              userFullName: currentUser?.userFullName || '',
-              userEmail: currentUser?.userEmail || '',
-              userTypeName: currentUser ? getUserTypeName(currentUser.userTypeId) : ''
+              userId: currentUser?.userId || "",
+              userName: currentUser?.userName || "",
+              userFullName: currentUser?.userFullName || "",
+              userEmail: currentUser?.userEmail || "",
+              userTypeName: currentUser
+                ? getUserTypeName(currentUser.userTypeId)
+                : "",
             }}
             userTypes={userTypes}
             onSubmit={handleSubmit}
@@ -185,7 +227,7 @@ const Users = () => {
         name="users"
         messageName="User"
         fetchData={fetchData}
-        // showToast={showToast}
+        showToast={showToast}
       />
     </Paper>
   );
