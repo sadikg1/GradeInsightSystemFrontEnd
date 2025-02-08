@@ -37,7 +37,7 @@ const ProfileSection = () => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
   const handleLogout = async () => {
-    console.log('Logout');
+  
     navigate('/auth/login');
   };
 
