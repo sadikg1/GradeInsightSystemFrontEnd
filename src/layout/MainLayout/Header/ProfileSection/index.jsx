@@ -1,31 +1,39 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from "react";
 
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Paper from '@mui/material/Paper';
-import Popper from '@mui/material/Popper';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import { useTheme } from "@mui/material/styles";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Paper from "@mui/material/Paper";
+import Popper from "@mui/material/Popper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 // project imports
-import MainCard from 'ui-component/cards/MainCard';
-import Transitions from 'ui-component/extended/Transitions';
-import User1 from 'assets/images/users/user-round.svg';
+import MainCard from "ui-component/cards/MainCard";
+import Transitions from "ui-component/extended/Transitions";
+import User1 from "assets/images/users/user-round.svg";
 
 // assets
-import { IconLogout, IconSettings, IconLetterFSmall, IconServicemark, IconDevicesQuestion } from '@tabler/icons-react';
+import {
+  IconLogout,
+  IconSettings,
+  IconLetterFSmall,
+  IconServicemark,
+  IconDevicesQuestion,
+  IconUserEdit,
+} from "@tabler/icons-react";
+import Cookies from "js-cookie";
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -37,8 +45,8 @@ const ProfileSection = () => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
   const handleLogout = async () => {
-    console.log('Logout');
-    navigate('/auth/login');
+    Cookies.remove("user");
+    navigate("/auth/login");
   };
 
   const handleClose = (event) => {
@@ -48,11 +56,11 @@ const ProfileSection = () => {
     setOpen(false);
   };
 
-  const handleListItemClick = (event, index, route = '') => {
+  const handleListItemClick = (event, index, route = "") => {
     setSelectedIndex(index);
     handleClose(event);
 
-    if (route && route !== '') {
+    if (route && route !== "") {
       navigate(route);
     }
   };
@@ -60,13 +68,16 @@ const ProfileSection = () => {
     setOpen((prevOpen) => !prevOpen);
   };
   const handleFaculty = () => {
-    navigate('/faculty');
+    navigate("/faculty");
   };
   const handleSemester = () => {
-    navigate('/semester');
+    navigate("/semester");
   };
   const handleExamType = () => {
-    navigate('/examType');
+    navigate("/examType");
+  };
+  const handleUserType = () => {
+    navigate("/userType");
   };
 
   const prevOpen = useRef(open);
@@ -82,42 +93,48 @@ const ProfileSection = () => {
     <>
       <Chip
         sx={{
-          height: '48px',
-          alignItems: 'center',
-          borderRadius: '27px',
-          transition: 'all .2s ease-in-out',
+          height: "48px",
+          alignItems: "center",
+          borderRadius: "27px",
+          transition: "all .2s ease-in-out",
           borderColor: theme.palette.primary.light,
           backgroundColor: theme.palette.primary.light,
           '&[aria-controls="menu-list-grow"], &:hover': {
             borderColor: theme.palette.primary.main,
             background: `${theme.palette.primary.main}!important`,
             color: theme.palette.primary.light,
-            '& svg': {
-              stroke: theme.palette.primary.light
-            }
+            "& svg": {
+              stroke: theme.palette.primary.light,
+            },
           },
-          '& .MuiChip-label': {
-            lineHeight: 0
-          }
+          "& .MuiChip-label": {
+            lineHeight: 0,
+          },
         }}
         icon={
           <Avatar
             src={User1}
             sx={{
               ...theme.typography.mediumAvatar,
-              margin: '8px 0 8px 8px !important',
-              cursor: 'pointer'
+              margin: "8px 0 8px 8px !important",
+              cursor: "pointer",
             }}
             ref={anchorRef}
-            aria-controls={open ? 'menu-list-grow' : undefined}
+            aria-controls={open ? "menu-list-grow" : undefined}
             aria-haspopup="true"
             color="inherit"
           />
         }
-        label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
+        label={
+          <IconSettings
+            stroke={1.5}
+            size="1.5rem"
+            color={theme.palette.primary.main}
+          />
+        }
         variant="outlined"
         ref={anchorRef}
-        aria-controls={open ? 'menu-list-grow' : undefined}
+        aria-controls={open ? "menu-list-grow" : undefined}
         aria-haspopup="true"
         onClick={handleToggle}
         color="primary"
@@ -132,34 +149,40 @@ const ProfileSection = () => {
         popperOptions={{
           modifiers: [
             {
-              name: 'offset',
+              name: "offset",
               options: {
-                offset: [0, 14]
-              }
-            }
-          ]
+                offset: [0, 14],
+              },
+            },
+          ],
         }}
       >
         {({ TransitionProps }) => (
           <Transitions in={open} {...TransitionProps}>
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
-                <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
+                <MainCard
+                  border={false}
+                  elevation={16}
+                  content={false}
+                  boxShadow
+                  shadow={theme.shadows[16]}
+                >
                   <Box sx={{ p: 2, pt: 0 }}>
                     <List
                       component="nav"
                       sx={{
-                        width: '100%',
+                        width: "100%",
                         maxWidth: 350,
                         minWidth: 300,
                         backgroundColor: theme.palette.background.paper,
-                        borderRadius: '10px',
-                        [theme.breakpoints.down('md')]: {
-                          minWidth: '100%'
+                        borderRadius: "10px",
+                        [theme.breakpoints.down("md")]: {
+                          minWidth: "100%",
                         },
-                        '& .MuiListItemButton-root': {
-                          mt: 0.5
-                        }
+                        "& .MuiListItemButton-root": {
+                          mt: 0.5,
+                        },
                       }}
                     >
                       {/* Faculty Button */}
@@ -172,7 +195,11 @@ const ProfileSection = () => {
                           <IconLetterFSmall stroke={1.5} size="1.8rem" />
                         </ListItemIcon>
 
-                        <ListItemText primary={<Typography variant="body2">Faculty</Typography>} />
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2">Faculty</Typography>
+                          }
+                        />
                       </ListItemButton>
                       {/* Semester Button */}
                       <ListItemButton
@@ -184,7 +211,11 @@ const ProfileSection = () => {
                           <IconServicemark stroke={1.5} size="1.8rem" />
                         </ListItemIcon>
 
-                        <ListItemText primary={<Typography variant="body2">Semester</Typography>} />
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2">Semester</Typography>
+                          }
+                        />
                       </ListItemButton>
                       {/* Exam Type Button */}
                       <ListItemButton
@@ -196,7 +227,27 @@ const ProfileSection = () => {
                           <IconDevicesQuestion stroke={1.5} size="1.3rem" />
                         </ListItemIcon>
 
-                        <ListItemText primary={<Typography variant="body2">Exam Type</Typography>} />
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2">Exam Type</Typography>
+                          }
+                        />
+                      </ListItemButton>
+                      {/* User Type Button */}
+                      <ListItemButton
+                        sx={{ borderRadius: `${customization.borderRadius}px` }}
+                        selected={selectedIndex === 0}
+                        onClick={() => handleUserType()}
+                      >
+                        <ListItemIcon>
+                          <IconUserEdit stroke={1.5} size="1.3rem" />
+                        </ListItemIcon>
+
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2">User Type</Typography>
+                          }
+                        />
                       </ListItemButton>
                       {/* Logout Button */}
                       <ListItemButton
@@ -207,7 +258,11 @@ const ProfileSection = () => {
                         <ListItemIcon>
                           <IconLogout stroke={1.5} size="1.3rem" />
                         </ListItemIcon>
-                        <ListItemText primary={<Typography variant="body2">Logout</Typography>} />
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2">Logout</Typography>
+                          }
+                        />
                       </ListItemButton>
                     </List>
                   </Box>

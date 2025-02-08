@@ -249,6 +249,8 @@ const ResultView = () => {
 
         <h3>Average: {internalAverage.toFixed(2)}%</h3>
 
+        
+
         <h2 style={{ textAlign: 'center' }}>Marks Analysis</h2>
         {/* Bar Chart */}
         <h4>Marks Comparison - Bar Chart</h4>
