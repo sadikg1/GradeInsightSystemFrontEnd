@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -16,17 +16,21 @@ import {
   Typography,
   TextField,
   Grid,
-  TablePagination
-} from '@mui/material';
-import { getData } from 'apiHandler/apiHandler';
-import ResultModal from './ResultModal';
-import { FaEye, FaSearch } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+  TablePagination,
+} from "@mui/material";
+import { getData } from "apiHandler/apiHandler";
+import ResultModal from "./ResultModal";
+import { FaEye, FaSearch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const ResultData = () => {
-  const [selectedFaculty, setSelectedFaculty] = useState('');
-  const [selectedSemester, setSelectedSemester] = useState('');
-  const [selectedExamType, setSelectedExamType] = useState('');
+  const userCookie = Cookies.get("user");
+  const user = userCookie ? JSON.parse(userCookie) : null;
+  const userType = user?.userTypeId; // 1 = Student, 2 = Admin, 3 = Teacher
+  const [selectedFaculty, setSelectedFaculty] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [selectedExamType, setSelectedExamType] = useState("");
   const [students, setStudents] = useState([]);
   const [results, setResults] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,7 +38,7 @@ const ResultData = () => {
   const [apiFaculty, setApiFaculty] = useState([]);
   const [apiExam, setApiExam] = useState([]);
   const [apiCourse, setApiCourse] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [editStudent, setEditStudent] = useState([]);
   const [page, setPage] = useState(0);
@@ -42,18 +46,18 @@ const ResultData = () => {
 
   const fetchData = async () => {
     try {
-      const response = await getData('/marks/result');
+      const response = await getData("/marks/result");
       setResults(response.data);
 
-      const examType = await getData('/examTypes');
+      const examType = await getData("/examTypes");
       setApiExam(examType.data);
 
-      const facultyResponse = await getData('/faculties');
+      const facultyResponse = await getData("/faculties");
       setApiFaculty(facultyResponse.data);
 
-      const semesterResponse = await getData('/semesters');
+      const semesterResponse = await getData("/semesters");
       setApiSemester(semesterResponse.data);
-      const courseResponse = await getData('/courses');
+      const courseResponse = await getData("/courses");
       setApiCourse(courseResponse.data);
     } catch (error) {
       console.error(error);
@@ -67,7 +71,7 @@ const ResultData = () => {
   const toggleExpand = () => {
     setIsExpanded((prev) => !prev);
     if (!isExpanded) {
-      document.getElementById('searchInput').focus(); // Focus the input when expanding
+      document.getElementById("searchInput").focus(); // Focus the input when expanding
     }
   };
 
@@ -89,38 +93,40 @@ const ResultData = () => {
       SemesterId: result.semesterId,
       SemesterName: result.semesterName,
       ExamTypeId: [...new Set(result.marks.map((e) => e.examTypeId))],
-      marks
+      marks,
     };
   });
 
-  const filteredCourses = apiCourse.filter((course) => course.semesterId === selectedSemester);
+  const filteredCourses = apiCourse.filter(
+    (course) => course.semesterId === selectedSemester
+  );
 
   const faculties = apiFaculty.map((faculty) => ({
     FacultyId: faculty.facultyId,
-    FacultyName: faculty.facultyName
+    FacultyName: faculty.facultyName,
   }));
 
   const semesters = apiSemester.map((semester) => ({
     SemesterId: semester.semesterId,
-    SemesterName: semester.semesterName
+    SemesterName: semester.semesterName,
   }));
 
   const examType = apiExam.map((exam) => ({
     ExamTypeId: exam.examTypeId,
-    ExamTypeName: exam.examTypeName
+    ExamTypeName: exam.examTypeName,
   }));
 
   const handleFacultyChange = (event) => {
     setSelectedFaculty(event.target.value);
-    setSelectedSemester('');
-    setSelectedExamType('');
+    setSelectedSemester("");
+    setSelectedExamType("");
     setStudents([]);
   };
 
   const handleSemesterChange = (event) => {
     const semester = event.target.value;
     setSelectedSemester(semester);
-    setSelectedExamType('');
+    setSelectedExamType("");
     setStudents([]);
   };
 
@@ -130,8 +136,12 @@ const ResultData = () => {
 
     const filteredStudents = resultData
       .filter((student) => {
-        const isFacultyAndSemesterMatch = student.FacultyId === selectedFaculty && student.SemesterId === selectedSemester;
-        const hasSelectedExamType = student.ExamTypeId.some((id) => id === examTypes);
+        const isFacultyAndSemesterMatch =
+          student.FacultyId === selectedFaculty &&
+          student.SemesterId === selectedSemester;
+        const hasSelectedExamType = student.ExamTypeId.some(
+          (id) => id === examTypes
+        );
         return isFacultyAndSemesterMatch && hasSelectedExamType;
       })
       .map((student) => {
@@ -148,7 +158,7 @@ const ResultData = () => {
 
         return {
           ...student,
-          marks: filteredMarks
+          marks: filteredMarks,
         };
       });
 
@@ -157,27 +167,30 @@ const ResultData = () => {
 
   const handleAddClick = () => {
     setIsModalOpen(true);
-    setEditStudent('');
+    setEditStudent("");
   };
   const navigate = useNavigate();
 
   const handleView = (student) => {
-    console.log('Student object received in handleView:', student); // Debugging log
+    console.log("Student object received in handleView:", student); // Debugging log
 
     // Correct the property name (case-sensitive)
     const studentId = student.StudentId;
 
     if (!studentId) {
-      console.error('Error: StudentId is missing', student);
+      console.error("Error: StudentId is missing", student);
       return;
     }
 
-    console.log('Navigating with studentId:', studentId);
-    navigate('/resultView', { state: { studentId } });
+    console.log("Navigating with studentId:", studentId);
+    navigate("/resultView", { state: { studentId } });
   };
 
   const handleModalSubmit = (studentData) => {
-    setStudents([...students, { ...studentData, StudentId: `S${students.length + 1}` }]);
+    setStudents([
+      ...students,
+      { ...studentData, StudentId: `S${students.length + 1}` },
+    ]);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -189,76 +202,104 @@ const ResultData = () => {
     setPage(0);
   };
 
-  const filteredStudents = students.filter((student) => student.StudentName.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredStudents = students.filter((student) =>
+    student.StudentName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', paddingLeft: '15px', paddingRight: '15px' }}>
+    <Paper
+      sx={{
+        width: "100%",
+        overflow: "hidden",
+        height: "100%",
+        paddingLeft: "15px",
+        paddingRight: "15px",
+      }}
+    >
       <Box sx={{ padding: 4 }}>
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginTop: '13px',
-            marginRight: '10px'
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "13px",
+            marginRight: "10px",
           }}
         >
           <div>
-            <Typography style={{ marginTop: '10px' }} fontWeight="bold" variant="h3">
+            <Typography
+              style={{ marginTop: "10px" }}
+              fontWeight="bold"
+              variant="h3"
+            >
               Result Records
             </Typography>
-            <div style={{ marginTop: '7px', marginBottom: '20px' }}>Total Resuly:{students.length}</div>
+            <div style={{ marginTop: "7px", marginBottom: "20px" }}>
+              Total Result:{students.length}
+            </div>
           </div>
-          <div style={{ display: 'flex' }}>
-            <div style={{ position: 'relative', marginRight: '40px', height: '0px' }}>
+          <div style={{ display: "flex" }}>
+            <div
+              style={{
+                position: "relative",
+                marginRight: "40px",
+                height: "0px",
+              }}
+            >
               <input
                 id="searchInput"
                 type="text"
                 placeholder="Search..."
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
-                  height: '35px',
-                  width: isExpanded ? '215px' : '0px', // Control width based on state
-                  borderRadius: '10px',
-                  border: '1px solid gray',
-                  paddingLeft: '15px', // Padding for the text
-                  transition: 'width 0.3s ease, opacity 0.3s ease', // Smooth transition
-                  opacity: isExpanded ? '1' : '0', // Fade effect
-                  paddingRight: '40px' // Add right padding to avoid text overlap with the icon
+                  height: "35px",
+                  width: isExpanded ? "215px" : "0px", // Control width based on state
+                  borderRadius: "10px",
+                  border: "1px solid gray",
+                  paddingLeft: "15px", // Padding for the text
+                  transition: "width 0.3s ease, opacity 0.3s ease", // Smooth transition
+                  opacity: isExpanded ? "1" : "0", // Fade effect
+                  paddingRight: "40px", // Add right padding to avoid text overlap with the icon
                 }}
               />
 
               <div
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '2px solid #1d396e',
-                  background: '#1d396e', // Red border around the icon
-                  padding: '5px', // Adds space around the icon
-                  position: 'absolute', // Make the position absolute
-                  right: '0px', // Position it inside the input
-                  top: '17px', // Center vertically
-                  transform: 'translateY(-50%)', // Adjust for perfect centering
-                  width: '36px',
-                  height: '35px',
-                  borderRadius: '10px', // Rounded corners
-                  zIndex: 1 // Ensure it stays above the input
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "2px solid #1d396e",
+                  background: "#1d396e", // Red border around the icon
+                  padding: "5px", // Adds space around the icon
+                  position: "absolute", // Make the position absolute
+                  right: "0px", // Position it inside the input
+                  top: "17px", // Center vertically
+                  transform: "translateY(-50%)", // Adjust for perfect centering
+                  width: "36px",
+                  height: "35px",
+                  borderRadius: "10px", // Rounded corners
+                  zIndex: 1, // Ensure it stays above the input
                 }}
               >
                 <FaSearch
                   onClick={toggleExpand}
                   style={{
-                    cursor: 'pointer',
-                    color: 'white',
-                    width: '15px',
-                    height: '15px'
+                    cursor: "pointer",
+                    color: "white",
+                    width: "15px",
+                    height: "15px",
                   }}
                 />
               </div>
             </div>
-            <Button variant="contained" style={{ background: 'primary', height: '40px' }} onClick={handleAddClick}>
-              Add Result
-            </Button>
+            {(userType === 2 || userType === 3) && (
+              <Button
+                variant="contained"
+                style={{ background: "primary", height: "40px" }}
+                onClick={handleAddClick}
+              >
+                Add Result
+              </Button>
+            )}
           </div>
         </div>
 
@@ -266,7 +307,11 @@ const ResultData = () => {
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Select Faculty</InputLabel>
-              <Select value={selectedFaculty} onChange={handleFacultyChange} label="Select Faculty">
+              <Select
+                value={selectedFaculty}
+                onChange={handleFacultyChange}
+                label="Select Faculty"
+              >
                 {faculties.map((faculty) => (
                   <MenuItem key={faculty.FacultyId} value={faculty.FacultyId}>
                     {faculty.FacultyName}
@@ -280,11 +325,20 @@ const ResultData = () => {
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Select Semester</InputLabel>
-                <Select value={selectedSemester} onChange={handleSemesterChange} label="Select Semester">
+                <Select
+                  value={selectedSemester}
+                  onChange={handleSemesterChange}
+                  label="Select Semester"
+                >
                   {apiSemester
-                    .filter((semester) => semester.facultyId === selectedFaculty) // Correct filtering
+                    .filter(
+                      (semester) => semester.facultyId === selectedFaculty
+                    ) // Correct filtering
                     .map((semester) => (
-                      <MenuItem key={semester.semesterId} value={semester.semesterId}>
+                      <MenuItem
+                        key={semester.semesterId}
+                        value={semester.semesterId}
+                      >
                         {semester.semesterName}
                       </MenuItem>
                     ))}
@@ -297,7 +351,11 @@ const ResultData = () => {
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Select Exam Type</InputLabel>
-                <Select value={selectedExamType} onChange={handleExamTypeChange} label="Select Exam Type">
+                <Select
+                  value={selectedExamType}
+                  onChange={handleExamTypeChange}
+                  label="Select Exam Type"
+                >
                   {examType.map((exam) => (
                     <MenuItem key={exam.ExamTypeId} value={exam.ExamTypeId}>
                       {exam.ExamTypeName}
@@ -313,30 +371,48 @@ const ResultData = () => {
           (() => {
             // Step 1: Calculate student averages and check if they passed all subjects
             const studentAverages = filteredStudents.map((student) => {
-              const totalMarks = filteredCourses.reduce((sum, course) => sum + (student.marks[course.courseId] || 0), 0);
+              const totalMarks = filteredCourses.reduce(
+                (sum, course) => sum + (student.marks[course.courseId] || 0),
+                0
+              );
               const totalFullMarks = filteredCourses.length * 100;
               const average = (totalMarks / totalFullMarks) * 100;
-              const isPass = filteredCourses.every((course) => (student.marks[course.courseId] || 0) >= 40);
+              const isPass = filteredCourses.every(
+                (course) => (student.marks[course.courseId] || 0) >= 40
+              );
 
               return { ...student, average, isPass };
             });
 
             // Step 2: Filter only students who have passed all subjects
-            const passedStudents = studentAverages.filter((student) => student.isPass);
+            const passedStudents = studentAverages.filter(
+              (student) => student.isPass
+            );
 
             // Step 3: Find the topper among passed students
-            const topper = passedStudents.reduce((prev, curr) => (curr.average > prev.average ? curr : prev), {
-              average: 0,
-              isPass: false
-            });
+            const topper = passedStudents.reduce(
+              (prev, curr) => (curr.average > prev.average ? curr : prev),
+              {
+                average: 0,
+                isPass: false,
+              }
+            );
 
             return (
               <div>
                 {/* Topper Display */}
                 {topper.isPass && (
-                  <Box sx={{ textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', marginTop: '20px', marginBottom: '10px' }}>
-                    🏆 Topper:{' '}
-                    <span style={{ color: '#2397F3' }}>
+                  <Box
+                    sx={{
+                      textAlign: "center",
+                      fontSize: "1.2rem",
+                      fontWeight: "bold",
+                      marginTop: "20px",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    🏆 Topper:{" "}
+                    <span style={{ color: "#2397F3" }}>
                       {topper.StudentName} ({topper.average.toFixed(2)}%)
                     </span>
                   </Box>
@@ -344,19 +420,18 @@ const ResultData = () => {
 
                 {/* Table */}
                 <TableContainer
-                  sx={{ maxHeight: '59vh', minHeight: '410px' }}
+                  sx={{ maxHeight: "59vh", minHeight: "410px" }}
                   style={{
-                    paddingRight: '20px',
-                    paddingLeft: '20px',
-                    marginTop: '20px',
-                    border: '2px solid #ccc',
-                    borderRadius: '10px'
+                    paddingRight: "20px",
+                    paddingLeft: "20px",
+                    marginTop: "20px",
+                    border: "2px solid #ccc",
+                    borderRadius: "10px",
                   }}
                 >
                   <Table>
                     <TableHead>
                       <TableRow>
-                        
                         <TableCell align="left">Student Name</TableCell>
                         {filteredCourses.map((course) => (
                           <TableCell key={course.courseId} align="center">
@@ -373,36 +448,65 @@ const ResultData = () => {
                         <TableRow
                           key={student.StudentId}
                           sx={{
-                            backgroundColor: student.StudentId === topper.StudentId ? '#e0ffe0' : 'inherit',
-                            fontWeight: student.StudentId === topper.StudentId ? 'bold' : 'normal'
+                            backgroundColor:
+                              student.StudentId === topper.StudentId
+                                ? "#e0ffe0"
+                                : "inherit",
+                            fontWeight:
+                              student.StudentId === topper.StudentId
+                                ? "bold"
+                                : "normal",
                           }}
                         >
                           <TableCell align="left">
                             {student.StudentName}
-                            {student.StudentId === topper.StudentId && <span style={{ color: '#FFD700' }} />}
+                            {student.StudentId === topper.StudentId && (
+                              <span style={{ color: "#FFD700" }} />
+                            )}
                           </TableCell>
                           {filteredCourses.map((course) => (
                             <TableCell key={course.courseId} align="center">
-                              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                {student.marks[course.courseId] !== undefined ? student.marks[course.courseId] : '-'}
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                {student.marks[course.courseId] !== undefined
+                                  ? student.marks[course.courseId]
+                                  : "-"}
                               </Box>
                             </TableCell>
                           ))}
-                          <TableCell align="center">{student.average.toFixed(2)}%</TableCell>
-                          <TableCell align="center" style={{ fontWeight: 'bold', color: student.isPass ? 'green' : 'red' }}>
-                            {student.isPass ? 'Pass' : 'Fail'}
+                          <TableCell align="center">
+                            {student.average.toFixed(2)}%
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            style={{
+                              fontWeight: "bold",
+                              color: student.isPass ? "green" : "red",
+                            }}
+                          >
+                            {student.isPass ? "Pass" : "Fail"}
                           </TableCell>
                           <TableCell align="center">
                             <Button
                               variant="outlined"
-                              startIcon={<FaEye size={15} style={{ color: '#2397F3' }} />}
+                              startIcon={
+                                <FaEye size={15} style={{ color: "#2397F3" }} />
+                              }
                               sx={{
-                                color: '#2397F3',
-                                borderColor: '#2397F3',
-                                '&:hover': { borderColor: '#2397F3', color: '#2397F3' },
+                                color: "#2397F3",
+                                borderColor: "#2397F3",
+                                "&:hover": {
+                                  borderColor: "#2397F3",
+                                  color: "#2397F3",
+                                },
                                 marginRight: 1,
-                                fontSize: '0.75rem',
-                                padding: '4px 8px'
+                                fontSize: "0.75rem",
+                                padding: "4px 8px",
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -432,7 +536,10 @@ const ResultData = () => {
         />
 
         {selectedExamType && students.length === 0 && (
-          <Typography variant="body1" sx={{ textAlign: 'center', marginTop: 4, color: 'red' }}>
+          <Typography
+            variant="body1"
+            sx={{ textAlign: "center", marginTop: 4, color: "red" }}
+          >
             No results available for this semester and ExamType.
           </Typography>
         )}

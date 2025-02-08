@@ -34,10 +34,14 @@ import {
   IconUserEdit,
 } from "@tabler/icons-react";
 import Cookies from "js-cookie";
+import showToast from "toastMessage/showToast";
 
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
+  const userCookie = Cookies.get("user");
+  const user = userCookie ? JSON.parse(userCookie) : null;
+  const userType = user?.userTypeId; // 1 = Student, 2 = Admin, 3 = Teacher
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
@@ -47,6 +51,7 @@ const ProfileSection = () => {
   const handleLogout = async () => {
     Cookies.remove("user");
     navigate("/auth/login");
+    showToast("success", "Successfully Logged Out");
   };
 
   const handleClose = (event) => {
@@ -185,71 +190,90 @@ const ProfileSection = () => {
                         },
                       }}
                     >
-                      {/* Faculty Button */}
-                      <ListItemButton
-                        sx={{ borderRadius: `${customization.borderRadius}px` }}
-                        selected={selectedIndex === 0}
-                        onClick={() => handleFaculty()}
-                      >
-                        <ListItemIcon>
-                          <IconLetterFSmall stroke={1.5} size="1.8rem" />
-                        </ListItemIcon>
+                      {/* Show these buttons only if the user is an Admin */}
+                      {userType === 2 && (
+                        <>
+                          {/* Faculty Button */}
+                          <ListItemButton
+                            sx={{
+                              borderRadius: `${customization.borderRadius}px`,
+                            }}
+                            selected={selectedIndex === 0}
+                            onClick={() => handleFaculty()}
+                          >
+                            <ListItemIcon>
+                              <IconLetterFSmall stroke={1.5} size="1.8rem" />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={
+                                <Typography variant="body2">Faculty</Typography>
+                              }
+                            />
+                          </ListItemButton>
 
-                        <ListItemText
-                          primary={
-                            <Typography variant="body2">Faculty</Typography>
-                          }
-                        />
-                      </ListItemButton>
-                      {/* Semester Button */}
-                      <ListItemButton
-                        sx={{ borderRadius: `${customization.borderRadius}px` }}
-                        selected={selectedIndex === 0}
-                        onClick={() => handleSemester()}
-                      >
-                        <ListItemIcon>
-                          <IconServicemark stroke={1.5} size="1.8rem" />
-                        </ListItemIcon>
+                          {/* Semester Button */}
+                          <ListItemButton
+                            sx={{
+                              borderRadius: `${customization.borderRadius}px`,
+                            }}
+                            selected={selectedIndex === 1}
+                            onClick={() => handleSemester()}
+                          >
+                            <ListItemIcon>
+                              <IconServicemark stroke={1.5} size="1.8rem" />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={
+                                <Typography variant="body2">
+                                  Semester
+                                </Typography>
+                              }
+                            />
+                          </ListItemButton>
 
-                        <ListItemText
-                          primary={
-                            <Typography variant="body2">Semester</Typography>
-                          }
-                        />
-                      </ListItemButton>
-                      {/* Exam Type Button */}
-                      <ListItemButton
-                        sx={{ borderRadius: `${customization.borderRadius}px` }}
-                        selected={selectedIndex === 0}
-                        onClick={() => handleExamType()}
-                      >
-                        <ListItemIcon>
-                          <IconDevicesQuestion stroke={1.5} size="1.3rem" />
-                        </ListItemIcon>
+                          {/* Exam Type Button */}
+                          <ListItemButton
+                            sx={{
+                              borderRadius: `${customization.borderRadius}px`,
+                            }}
+                            selected={selectedIndex === 2}
+                            onClick={() => handleExamType()}
+                          >
+                            <ListItemIcon>
+                              <IconDevicesQuestion stroke={1.5} size="1.3rem" />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={
+                                <Typography variant="body2">
+                                  Exam Type
+                                </Typography>
+                              }
+                            />
+                          </ListItemButton>
 
-                        <ListItemText
-                          primary={
-                            <Typography variant="body2">Exam Type</Typography>
-                          }
-                        />
-                      </ListItemButton>
-                      {/* User Type Button */}
-                      <ListItemButton
-                        sx={{ borderRadius: `${customization.borderRadius}px` }}
-                        selected={selectedIndex === 0}
-                        onClick={() => handleUserType()}
-                      >
-                        <ListItemIcon>
-                          <IconUserEdit stroke={1.5} size="1.3rem" />
-                        </ListItemIcon>
+                          {/* User Type Button */}
+                          <ListItemButton
+                            sx={{
+                              borderRadius: `${customization.borderRadius}px`,
+                            }}
+                            selected={selectedIndex === 3}
+                            onClick={() => handleUserType()}
+                          >
+                            <ListItemIcon>
+                              <IconUserEdit stroke={1.5} size="1.3rem" />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={
+                                <Typography variant="body2">
+                                  User Type
+                                </Typography>
+                              }
+                            />
+                          </ListItemButton>
+                        </>
+                      )}
 
-                        <ListItemText
-                          primary={
-                            <Typography variant="body2">User Type</Typography>
-                          }
-                        />
-                      </ListItemButton>
-                      {/* Logout Button */}
+                      {/* Logout Button - Always Visible */}
                       <ListItemButton
                         sx={{ borderRadius: `${customization.borderRadius}px` }}
                         selected={selectedIndex === 4}
