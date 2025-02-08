@@ -23,6 +23,7 @@ const InfoCard = ({ title, value, icon, color }) => {
         height: '100%',
         borderColor: theme.palette.divider,
         backgroundColor: theme.palette.background.paper,
+        border: '2px solid #ccc',
         borderRadius: '10px'
       }}
     >

@@ -228,6 +228,7 @@ const Users = () => {
         messageName="User"
         fetchData={fetchData}
         showToast={showToast}
+        showToast={showToast}
       />
     </Paper>
   );

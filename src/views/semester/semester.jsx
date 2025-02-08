@@ -116,10 +116,10 @@ const SemesterName = () => {
     try {
       if (isEdit && editCardId) {
         await putData(`/semesters/${editCardId}`, { ...values, semesterId: editCardId });
-        showToast('success','Successfully Updated Student')
+        showToast('success', 'Successfully Updated Student');
       } else {
         await postData('/semesters', values);
-        showToast('success','Successfully Added Student')
+        showToast('success', 'Successfully Added Student');
       }
       fetchData();
       handleClose();
@@ -152,7 +152,17 @@ const SemesterName = () => {
     }
   };
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', paddingLeft: '15px', paddingRight: '15px' }}>
+    <Paper
+      sx={{
+        width: '100%',
+        overflow: 'hidden',
+        height: '100%',
+        paddingLeft: '15px',
+        paddingRight: '15px',
+        border: '2px solid #ccc',
+        borderRadius: '10px'
+      }}
+    >
       <div
         style={{
           display: 'flex',
@@ -215,11 +225,7 @@ const SemesterName = () => {
               />
             </div>
           </div>
-          <Button
-            variant="contained"
-            style={{ background: 'primary', height: '40px' }}
-            onClick={handleClickOpen}
-          >
+          <Button variant="contained" style={{ background: 'primary', height: '40px' }} onClick={handleClickOpen}>
             Add Semester
           </Button>
         </div>

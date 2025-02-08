@@ -116,17 +116,16 @@ const CourseManagement = () => {
     try {
       if (isEdit && editCardId) {
         await putData(`/courses/${editCardId}`, { ...values, courseId: editCardId });
-        showToast("success","Successfully Updated Course");
+        showToast('success', 'Successfully Updated Course');
       } else {
         await postData('/courses', values);
-        showToast("success","Successfully Added Course");
+        showToast('success', 'Successfully Added Course');
       }
       fetchData();
       handleClose();
     } catch (err) {
       console.log(err);
-      showToast("error","Error Adding Course");
-
+      showToast('error', 'Error Adding Course');
     }
   };
 
@@ -154,7 +153,17 @@ const CourseManagement = () => {
     }
   };
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', paddingLeft: '15px', paddingRight: '15px' }}>
+    <Paper
+      sx={{
+        width: '100%',
+        overflow: 'hidden',
+        height: '100%',
+        paddingLeft: '15px',
+        paddingRight: '15px',
+        border: '2px solid #ccc',
+        borderRadius: '10px'
+      }}
+    >
       <div
         style={{
           display: 'flex',

@@ -23,7 +23,6 @@ import * as Yup from 'yup';
 import { FaBriefcaseMedical, FaEdit, FaSearch, FaTrash } from 'react-icons/fa';
 import { visuallyHidden } from '@mui/utils';
 
-
 import DeleteModal from 'modal/DeleteModal';
 
 import { getData, postData, putData } from 'apiHandler/apiHandler';
@@ -126,18 +125,16 @@ const Faculty = () => {
     try {
       if (isEdit && editCardId) {
         await putData(`/faculties/${editCardId}`, { ...values, facultyId: editCardId });
-        showToast("success","Successfully Updated Faculty");
-        
+        showToast('success', 'Successfully Updated Faculty');
       } else {
         await postData('/faculties', values);
-        showToast("success","Successfully Added Faculty");
-
+        showToast('success', 'Successfully Added Faculty');
       }
       fetchData();
       handleClose();
     } catch (err) {
-     console.log(err)
-     showToast("error","Error Adding Faculty");
+      console.log(err);
+      showToast('error', 'Error Adding Faculty');
     }
   };
 
@@ -156,7 +153,17 @@ const Faculty = () => {
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', paddingLeft: '15px', paddingRight: '15px' }}>
+    <Paper
+      sx={{
+        width: '100%',
+        overflow: 'hidden',
+        height: '100%',
+        paddingLeft: '15px',
+        paddingRight: '15px',
+        border: '2px solid #ccc',
+        borderRadius: '10px'
+      }}
+    >
       <div
         style={{
           display: 'flex',
@@ -180,13 +187,13 @@ const Faculty = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
                 height: '35px',
-                width: isExpanded ? '215px' : '0px', 
+                width: isExpanded ? '215px' : '0px',
                 borderRadius: '10px',
                 border: '1px solid gray',
-                paddingLeft: '15px', 
+                paddingLeft: '15px',
                 transition: 'width 0.3s ease, opacity 0.3s ease',
-                opacity: isExpanded ? '1' : '0', 
-                paddingRight: '40px' 
+                opacity: isExpanded ? '1' : '0',
+                paddingRight: '40px'
               }}
             />
 
@@ -196,16 +203,16 @@ const Faculty = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 border: '2px solid #1d396e',
-                background: '#1d396e', 
-                padding: '5px', 
-                position: 'absolute', 
+                background: '#1d396e',
+                padding: '5px',
+                position: 'absolute',
                 right: '0px',
                 top: '17px',
-                transform: 'translateY(-50%)', 
+                transform: 'translateY(-50%)',
                 width: '36px',
                 height: '35px',
-                borderRadius: '10px', 
-                zIndex: 1 
+                borderRadius: '10px',
+                zIndex: 1
               }}
             >
               <FaSearch
@@ -219,11 +226,7 @@ const Faculty = () => {
               />
             </div>
           </div>
-          <Button
-            variant="contained"
-            style={{ background: 'primary', height: '40px' }}
-            onClick={handleClickOpen}
-          >
+          <Button variant="contained" style={{ background: 'primary', height: '40px' }} onClick={handleClickOpen}>
             Add Faculty
           </Button>
         </div>
@@ -322,8 +325,8 @@ const Faculty = () => {
                       padding: '4px 8px'
                     }}
                     onClick={(e) => {
-                      e.stopPropagation(); 
-                      handleEdit(row.facultyId, row.facultyName); 
+                      e.stopPropagation();
+                      handleEdit(row.facultyId, row.facultyName);
                     }}
                   >
                     Edit
@@ -340,8 +343,8 @@ const Faculty = () => {
                       padding: '4px 8px'
                     }}
                     onClick={(e) => {
-                      e.stopPropagation(); 
-                      handleDelete(row.facultyId); 
+                      e.stopPropagation();
+                      handleDelete(row.facultyId);
                     }}
                   >
                     Delete
@@ -368,9 +371,7 @@ const Faculty = () => {
         setDeleteModalVisible={setDeleteModalVisible}
         handleDeleteCardId={deleteCardId}
         name="faculties"
-     
         fetchData={fetchData}
-      
       />
     </Paper>
   );

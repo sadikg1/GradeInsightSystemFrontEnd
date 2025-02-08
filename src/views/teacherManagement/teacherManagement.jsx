@@ -117,16 +117,16 @@ const TeacherManagement = () => {
     try {
       if (isEdit && editCardId) {
         await putData(`/teachers/${editCardId}`, { ...values, teacherId: editCardId });
-        showToast("success","Teacher Updated Successfully")
+        showToast('success', 'Teacher Updated Successfully');
       } else {
         await postData('/teachers', values);
-        showToast("success","Teacher Created Successfully")
+        showToast('success', 'Teacher Created Successfully');
       }
       fetchData();
       handleClose();
     } catch (err) {
       console.log(err);
-      showToast("error","Error Adding Teacher")
+      showToast('error', 'Error Adding Teacher');
     }
   };
 
@@ -154,7 +154,17 @@ const TeacherManagement = () => {
     }
   };
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', paddingLeft: '15px', paddingRight: '15px' }}>
+    <Paper
+      sx={{
+        width: '100%',
+        overflow: 'hidden',
+        height: '100%',
+        paddingLeft: '15px',
+        paddingRight: '15px',
+        border: '2px solid #ccc',
+        borderRadius: '10px'
+      }}
+    >
       <div
         style={{
           display: 'flex',

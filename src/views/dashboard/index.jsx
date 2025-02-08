@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 
 import FacultyTotal from './facultyTotalStudentsCard';
-import TeacherAndCourseTotal from './totalTeacherAndCourseCard'
+import TeacherAndCourseTotal from './totalTeacherAndCourseCard';
 import MarksCards from './marksCards';
-import TrendAnalysis from './courseAvgBarChart';
+import CourseAvgMarks from './courseAvgBarChart';
 import { gridSpacing } from 'store/constant';
 import {} from '@mui/material';
 
@@ -38,14 +38,14 @@ const Dashboard = () => {
         </Grid>
       </Grid>
 
-      {/* Third Row: Faculty Performance*/}
+      {/* Third Row: Marks Insight and Faculty&Semester wise CourseAveragemarks Performance*/}
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item lg={6} md={12} sm={12} xs={12} sx={{ height: '100%' }}>
             <MarksCards />
           </Grid>
-          <Grid item lg={6} md={12} sm={12} xs={12} >
-            <TrendAnalysis />
+          <Grid item lg={6} md={12} sm={12} xs={12}>
+            <CourseAvgMarks />
           </Grid>
         </Grid>
       </Grid>

@@ -21,7 +21,7 @@ import { TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import * as Yup from 'yup';
-import { FaBriefcaseMedical, FaEdit, FaSearch, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaSearch, FaTrash } from 'react-icons/fa';
 import { visuallyHidden } from '@mui/utils';
 import DeleteModal from 'modal/DeleteModal';
 import { getData, postData, putData } from 'apiHandler/apiHandler';
@@ -160,7 +160,17 @@ const StudentManagement = () => {
     }
   };
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', height: '100%', paddingLeft: '15px', paddingRight: '15px' }}>
+    <Paper
+      sx={{
+        width: '100%',
+        overflow: 'hidden',
+        height: '100%',
+        paddingLeft: '15px',
+        paddingRight: '15px',
+        border: '2px solid #ccc',
+        borderRadius: '10px'
+      }}
+    >
       <div
         style={{
           display: 'flex',

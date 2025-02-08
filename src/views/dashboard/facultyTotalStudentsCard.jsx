@@ -15,7 +15,7 @@ const FacultyCard = ({ faculty, totalStudents }) => {
   return (
     <Card
       variant="outlined"
-      style={{ boxShadow: 'none', borderRadius: '10px' }}
+      style={{ boxShadow: 'none',border: '2px solid #ccc', borderRadius: '10px' }}
       sx={{ display: 'flex', alignItems: 'center', p: 2, height: '100%' }}
     >
       <Avatar
