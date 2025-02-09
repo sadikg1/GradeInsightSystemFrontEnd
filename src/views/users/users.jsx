@@ -78,41 +78,48 @@ const Users = () => {
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
+      // Find userType object from userTypeName
       const userType = userTypes.find(
         (type) => type.userTypeName === values.userTypeName
       );
+  
       if (!userType) {
-        throw new Error("Invalid department selected");
+        throw new Error("Invalid user type selected");
       }
-
+  
       const payload = {
-        userTypeId: userType.userTypeId,
+        userTypeId: userType.userTypeId, // Ensure correct userTypeId
         userName: values.userName,
         userFullName: values.userFullName,
         userEmail: values.userEmail,
       };
+  
       if (currentUser) {
+        // Update existing user
         await putData(`/Users/${currentUser.userId}`, {
           ...payload,
           userId: values.userId,
         });
-        const updatedUsers = await getData("/Users");
+  
+        const updatedUsers = await getData("/Users"); // Refresh user data
         setUsers(updatedUsers.data);
         showToast("success", "User updated successfully");
       } else {
+        // Create new user
         const response = await postData("/Users", payload, {
           userPassword: values.newPassword,
         });
         setUsers([...users, response.data]);
         showToast("success", "User created successfully");
       }
+  
       setOpen(false);
       resetForm();
     } catch (error) {
-      showToast("error", `Error saving User information. Please try again. `);
+      showToast("error", "Error saving User information. Please try again.");
     }
   };
-
+  
   const handlePasswordChange = async (values, { resetForm }) => {
     try {
       const headers = {
