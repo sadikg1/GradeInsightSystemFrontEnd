@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getData } from "apiHandler/apiHandler";
+import { getData, postData } from "apiHandler/apiHandler";
 import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -15,6 +15,7 @@ import {
 } from "chart.js";
 import { Button, Paper } from "@mui/material";
 import { FaChartLine, FaBrain } from "react-icons/fa";
+import showToast from "toastMessage/showToast";
 
 // Registering necessary chart components
 ChartJS.register(
@@ -39,16 +40,26 @@ const ResultView = () => {
   const [internalStatus, setInternalStatus] = useState(""); // State for Internal status
   const [preBoardAverage, setPreBoardAverage] = useState(0); // Average for Pre-board
   const [internalAverage, setInternalAverage] = useState(0); // Average for Internal Exam
-  const [isPrButtonClicked, setIsPrButtonClicked] = useState(false);
-  const [isTmButtonClicked, setIsTmButtonClicked] = useState(false);
-
+  const [trainStatus, setTrainStatus] = useState({
+    isTraining: false,
+    success: false,
+    error: false,
+  });
+  const [predictStatus, setPredictStatus] = useState({
+    isPredicting: false,
+    success: false,
+    error: false,
+  });
+  const [predictedData, setPredictedData] = useState({
+    predictedMarks: 0,
+  });
   useEffect(() => {
     const fetchData = async () => {
       if (!studentId) return; // Ensure studentId is available before making the request
       try {
         const response = await getData(`marks/student/${studentId}`);
         console.log("API Response:", response);
-        const studentDataResponse = await getData(`students/${studentId}`);
+        
 
         const studentData = response.data.find(
           (student) => student.studentId === studentId
@@ -148,7 +159,7 @@ const ResultView = () => {
   // Bar Chart Data
   // Function to truncate subject names to 10 characters and add "..." if necessary
   const truncateLabel = (label) => {
-    return label.length > 10 ? label.slice(0, 15) + "..." : label;
+    return label.length > 15 ? label.slice(0, 15) + "..." : label;
   };
 
   // Truncate the labels directly within the chart data
@@ -194,16 +205,44 @@ const ResultView = () => {
   };
   const totalPreBoardMarks = preBoardMarks.reduce((acc, mark) => acc + mark, 0);
   const totalInternalMarks = internalMarks.reduce((acc, mark) => acc + mark, 0);
-  const handleTrain = () => {
-    console.log("Train Model Clicked");
+  const handleTrain = async () => {
+    try {
+      setTrainStatus({ isTraining: true, success: false, error: false });
+      const response = await postData("/students/trainModel");
+
+      if (response.status === 200 || response.status === 201) {
+        setTrainStatus({ isTraining: false, success: true, error: false });
+        showToast("success", "Model Trained Successfully");
+      } else {
+        throw new Error("Training failed");
+      }
+    } catch (error) {
+      console.error("Training error:", error);
+      setTrainStatus({ isTraining: false, success: false, error: true });
+      showToast("error", "Failed to train model");
+    }
   };
-  const handlePredict = (studentId, totalInternalMarks, totalPreBoardMarks) => {
-    console.log(
-      "Data received: ",
-      studentId,
-      totalInternalMarks,
-      totalPreBoardMarks
-    );
+  const handlePredict = async (
+    studentId,
+    totalInternalMarks,
+    totalPreBoardMarks
+  ) => {
+    try {
+      const response = await postData("/students/predict", {
+        studentId: studentId,
+        InternalMarks: totalInternalMarks,
+        preboardMarks: totalPreBoardMarks,
+      });
+
+      // Store the predicted data
+      setPredictedData({
+        predictedMarks: response.data.predictedMarks.predictedMarks,
+      });
+      showToast("success", "Final Marks Predicted Successfully!");
+    } catch (error) {
+      console.error("Prediction error:", error);
+      showToast("error", "Failed to predict marks");
+    }
   };
 
   return (
@@ -348,7 +387,7 @@ const ResultView = () => {
         <Button
           variant="outlined"
           startIcon={<FaBrain size={15} />}
-          disabled={isTmButtonClicked}
+          disabled={trainStatus.isTraining}
           sx={{
             color: "#2563EB",
             borderColor: "#2563EB",
@@ -356,11 +395,36 @@ const ResultView = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            "&:disabled": {
+            "&:hover": {
               backgroundColor: "#DBEAFE",
               borderColor: "#1E40AF",
               color: "#1E40AF",
             },
+            "&:disabled": {
+              backgroundColor: "#E2E8F0",
+              borderColor: "#94A3B8",
+              color: "#94A3B8",
+            },
+            ...(trainStatus.success && {
+              backgroundColor: "#86EFAC",
+              borderColor: "#22C55E",
+              color: "#14532D",
+              "&:disabled": {
+                backgroundColor: "#86EFAC",
+                borderColor: "#22C55E",
+                color: "#14532D",
+              },
+            }),
+            ...(trainStatus.error && {
+              backgroundColor: "#FECACA",
+              borderColor: "#EF4444",
+              color: "#7F1D1D",
+              "&:disabled": {
+                backgroundColor: "#FECACA",
+                borderColor: "#EF4444",
+                color: "#7F1D1D",
+              },
+            }),
             fontSize: "0.85rem",
             padding: "6px 12px",
             minWidth: "130px",
@@ -369,11 +433,16 @@ const ResultView = () => {
           }}
           onClick={(e) => {
             e.stopPropagation();
-            setIsTmButtonClicked(true);
             handleTrain();
           }}
         >
-          {isTmButtonClicked ? "Training..." : "Train Model"}
+          {trainStatus.isTraining
+            ? "Training..."
+            : trainStatus.success
+              ? "Training Complete"
+              : trainStatus.error
+                ? "Training Failed"
+                : "Train Model"}
         </Button>
 
         <h2 style={{ textAlign: "center" }}>Exam Type Total Marks</h2>
@@ -404,17 +473,41 @@ const ResultView = () => {
                   <Button
                     variant="outlined"
                     startIcon={<FaChartLine size={15} />}
+                    disabled={predictStatus.isPredicting}
                     sx={{
                       color: "#fff",
                       borderColor: "#239F48",
                       backgroundColor: "#239F48",
-
                       alignItems: "center",
                       "&:hover": {
-                        backgroundColor: "transparent",
-                        borderColor: "#2BA84A",
-                        color: "#2BA84A",
+                        backgroundColor: "#2BA84A",
+                        borderColor: "#239F48",
                       },
+                      "&:disabled": {
+                        backgroundColor: "#E2E8F0",
+                        borderColor: "#94A3B8",
+                        color: "#94A3B8",
+                      },
+                      ...(predictStatus.success && {
+                        backgroundColor: "#86EFAC",
+                        borderColor: "#22C55E",
+                        color: "#14532D",
+                        "&:disabled": {
+                          backgroundColor: "#86EFAC",
+                          borderColor: "#22C55E",
+                          color: "#14532D",
+                        },
+                      }),
+                      ...(predictStatus.error && {
+                        backgroundColor: "#FECACA",
+                        borderColor: "#EF4444",
+                        color: "#7F1D1D",
+                        "&:disabled": {
+                          backgroundColor: "#FECACA",
+                          borderColor: "#EF4444",
+                          color: "#7F1D1D",
+                        },
+                      }),
                       fontSize: "0.85rem",
                       minWidth: "130px",
                       textAlign: "center",
@@ -422,18 +515,49 @@ const ResultView = () => {
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
+                      setPredictStatus({
+                        isPredicting: true,
+                        success: false,
+                        error: false,
+                      });
                       handlePredict(
                         studentId,
                         totalInternalMarks,
                         totalPreBoardMarks
-                      );
+                      )
+                        .then(() => {
+                          setPredictStatus({
+                            isPredicting: false,
+                            success: true,
+                            error: false,
+                          });
+                        })
+                        .catch(() => {
+                          setPredictStatus({
+                            isPredicting: false,
+                            success: false,
+                            error: true,
+                          });
+                        });
                     }}
                   >
-                    Predict Score
+                    {predictStatus.isPredicting
+                      ? "Predicting..."
+                      : predictStatus.success
+                        ? "Prediction Complete"
+                        : predictStatus.error
+                          ? "Prediction Failed"
+                          : "Predict Score"}
                   </Button>
                 </span>
               </td>
-              <td style={{ textAlign: "center" }}></td>
+              <td style={{ textAlign: "center" }}>
+                {predictedData.predictedMarks ? (
+                  <div>
+                    <div>{predictedData.predictedMarks.toFixed(0)}</div>
+                  </div>
+                ) : null}
+              </td>
             </tr>
           </tbody>
         </table>
