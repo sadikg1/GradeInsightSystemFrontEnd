@@ -14,6 +14,7 @@ import {
   TableBody,
   TablePagination,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { Field, Form, Formik } from "formik";
@@ -441,117 +442,127 @@ const StudentManagement = () => {
           </Formik>
         </Box>
       </Modal>
+      {loading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100px"
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <TableContainer
+          sx={{ maxHeight: "59vh", minHeight: "410px" }}
+          style={{ paddingRight: "20px", paddingLeft: "20px" }}
+        >
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="left" style={{ paddingLeft: "10px" }}>
+                  <TableSortLabel
+                    active={orderBy === "studentName"}
+                    direction={orderBy === "studentName" ? order : "asc"}
+                    onClick={() => handleRequestSort("studentName")}
+                  >
+                    Student Name
+                    {orderBy === "studentName" ? (
+                      <Box component="span" sx={visuallyHidden}>
+                        {order === "desc"
+                          ? "sorted descending"
+                          : "sorted ascending"}
+                      </Box>
+                    ) : null}
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell align="center">Faculty</TableCell>
+                <TableCell align="center">Semester</TableCell>
+                <TableCell align="center">Address</TableCell>
+                <TableCell align="center">Contact Number</TableCell>
 
-      <TableContainer
-        sx={{ maxHeight: "59vh", minHeight: "410px" }}
-        style={{ paddingRight: "20px", paddingLeft: "20px" }}
-      >
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="left" style={{ paddingLeft: "10px" }}>
-                <TableSortLabel
-                  active={orderBy === "studentName"}
-                  direction={orderBy === "studentName" ? order : "asc"}
-                  onClick={() => handleRequestSort("studentName")}
-                >
-                  Student Name
-                  {orderBy === "studentName" ? (
-                    <Box component="span" sx={visuallyHidden}>
-                      {order === "desc"
-                        ? "sorted descending"
-                        : "sorted ascending"}
-                    </Box>
-                  ) : null}
-                </TableSortLabel>
-              </TableCell>
-              <TableCell align="center">Faculty</TableCell>
-              <TableCell align="center">Semester</TableCell>
-              <TableCell align="center">Address</TableCell>
-              <TableCell align="center">Contact Number</TableCell>
+                <TableCell align="center">Creation Date</TableCell>
+                <TableCell align="right" style={{ paddingRight: "50px" }}>
+                  Action
+                </TableCell>
+              </TableRow>
+            </TableHead>
 
-              <TableCell align="center">Creation Date</TableCell>
-              <TableCell align="right" style={{ paddingRight: "50px" }}>
-                Action
-              </TableCell>
-            </TableRow>
-          </TableHead>
+            <TableBody>
+              {filteredService
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <TableRow hover key={row.studentId}>
+                    <TableCell style={{ paddingLeft: "10px" }}>
+                      {row.studentName}
+                    </TableCell>
 
-          <TableBody>
-            {filteredService
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <TableRow hover key={row.studentId}>
-                  <TableCell style={{ paddingLeft: "10px" }}>
-                    {row.studentName}
-                  </TableCell>
+                    <TableCell align="center">
+                      {row.faculty.facultyName}
+                    </TableCell>
+                    <TableCell align="center">
+                      {row.semester.semesterName}
+                    </TableCell>
+                    <TableCell align="center">{row.address}</TableCell>
+                    <TableCell align="center">{row.contactNo}</TableCell>
 
-                  <TableCell align="center">
-                    {row.faculty.facultyName}
-                  </TableCell>
-                  <TableCell align="center">
-                    {row.semester.semesterName}
-                  </TableCell>
-                  <TableCell align="center">{row.address}</TableCell>
-                  <TableCell align="center">{row.contactNo}</TableCell>
-
-                  <TableCell align="center">
-                    {row.dateCreated.split("T")[0]}
-                  </TableCell>
-                  <TableCell align="right" style={{ paddingRight: "5px" }}>
-                    <Button
-                      variant="outlined"
-                      startIcon={
-                        <FaEdit size={15} style={{ color: "#2397F3" }} />
-                      }
-                      sx={{
-                        color: "#2397F3",
-                        borderColor: "#2397F3",
-                        "&:hover": { borderColor: "#2397F3", color: "#2397F3" },
-                        marginRight: 1,
-                        fontSize: "0.75rem",
-                        padding: "4px 8px",
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent row click when button is clicked
-                        handleEdit(
-                          row.studentId,
-                          row.facultyId,
-                          row.semesterId,
-                          row.studentName,
-                          row.address,
-                          row.contactNo
-                        ); // Your edit logic
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      startIcon={
-                        <FaTrash size={15} style={{ color: "#f44336" }} />
-                      }
-                      sx={{
-                        color: "#f44336",
-                        borderColor: "#f44336",
-                        "&:hover": { borderColor: "#f44336", color: "#f44336" },
-                        marginRight: 1,
-                        fontSize: "0.75rem",
-                        padding: "4px 8px",
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent row click when button is clicked
-                        handleDelete(row.studentId); // Your delete logic
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                    <TableCell align="center">
+                      {row.dateCreated.split("T")[0]}
+                    </TableCell>
+                    <TableCell align="right" style={{ paddingRight: "5px" }}>
+                      <Button
+                        variant="outlined"
+                        startIcon={
+                          <FaEdit size={15} style={{ color: "#2397F3" }} />
+                        }
+                        sx={{
+                          color: "#2397F3",
+                          borderColor: "#2397F3",
+                          "&:hover": { borderColor: "#2397F3", color: "#2397F3" },
+                          marginRight: 1,
+                          fontSize: "0.75rem",
+                          padding: "4px 8px",
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent row click when button is clicked
+                          handleEdit(
+                            row.studentId,
+                            row.facultyId,
+                            row.semesterId,
+                            row.studentName,
+                            row.address,
+                            row.contactNo
+                          ); // Your edit logic
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        startIcon={
+                          <FaTrash size={15} style={{ color: "#f44336" }} />
+                        }
+                        sx={{
+                          color: "#f44336",
+                          borderColor: "#f44336",
+                          "&:hover": { borderColor: "#f44336", color: "#f44336" },
+                          marginRight: 1,
+                          fontSize: "0.75rem",
+                          padding: "4px 8px",
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent row click when button is clicked
+                          handleDelete(row.studentId); // Your delete logic
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
       <TablePagination
         rowsPerPageOptions={[10, 25, 50]}
         component="div"
