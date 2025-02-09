@@ -7,7 +7,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
-import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -67,7 +66,7 @@ const AuthLogin = ({ ...others }) => {
       navigate("/dashboard");
       showToast("success", "Login Successful");
     } catch (err) {
-      showToast("error", "Login failed");
+      showToast("error", "These credentials do not match our records.");
     } finally {
       // Re-enable button after 5 seconds (or as per your need)
       setTimeout(() => {
@@ -129,7 +128,7 @@ const AuthLogin = ({ ...others }) => {
               sx={{ ...theme.typography.customInput }}
             >
               <InputLabel htmlFor="outlined-adornment-email-login">
-                Email Address / Username
+                Email Address
               </InputLabel>
               <OutlinedInput
                 id="outlined-adornment-email-login"

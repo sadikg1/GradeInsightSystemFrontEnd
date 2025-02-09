@@ -6,7 +6,7 @@ import { lazy } from 'react';
 import Loadable from 'ui-component/Loadable';
 
 // login option 3 routing
-const AuthLogin3 = Loadable(lazy(() => import('views/pages/authentication3/Login3')));
+const AuthLogin3 = Loadable(lazy(() => import('views/pages/authenticationLogin/Login')));
 
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 

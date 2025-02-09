@@ -22,7 +22,7 @@ import Typography from "@mui/material/Typography";
 // project imports
 import MainCard from "ui-component/cards/MainCard";
 import Transitions from "ui-component/extended/Transitions";
-import User1 from "assets/images/users/user-round.svg";
+import User1 from "assets/images/users/userIcon.png";
 
 // assets
 import {

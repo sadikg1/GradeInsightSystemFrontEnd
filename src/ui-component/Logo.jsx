@@ -1,8 +1,8 @@
 // material-ui
-import { Box, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { Box, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
-import logo from 'assets/images/logo.png';
+import logo from "assets/images/logo.png";
 
 const Logo = () => {
   const theme = useTheme();
@@ -11,8 +11,12 @@ const Logo = () => {
     <Box display="flex" alignItems="center">
       <img src={logo} alt="Berry" width="50" />
       <Typography
-        variant="h6"
-        sx={{ marginLeft: 1, fontWeight: 'bold', color: theme.palette.text.primary }}
+        variant="h5"
+        sx={{
+          marginLeft: 1,
+          fontWeight: "bold",
+          color: theme.palette.text.primary,
+        }}
       >
         GradeInsight
       </Typography>
