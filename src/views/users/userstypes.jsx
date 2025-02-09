@@ -1,8 +1,4 @@
 import {
-  Button,
-  Grid,
-  IconButton,
-  Modal,
   Typography,
   Paper,
   TableContainer,
@@ -17,30 +13,15 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 
-import { Field, Form, Formik } from "formik";
+
 import React, { useEffect, useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import * as Yup from "yup";
 import { visuallyHidden } from "@mui/utils";
 import "react-toastify/dist/ReactToastify.css";
-import { FaEdit, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import showToast from "ToastMessage/showToast";
-import { getData, putData } from "apiHandler/apiHandler";
+import { getData } from "apiHandler/apiHandler";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  bgcolor: "background.paper",
-  p: 4,
-  borderRadius: "10px",
-};
 
-const validationSchema = Yup.object().shape({
-  userTypeName: Yup.string().max(100).required("User Type is required"),
-});
 
 const UserType = () => {
   const [page, setPage] = useState(0);
@@ -48,16 +29,11 @@ const UserType = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [userTypes, setUserTypes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [editCardId, setEditCardId] = useState(null);
   const [initialValues, setInitialValues] = useState({ userTypeName: "" });
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("userTypeName");
 
-  const handleClose = () => {
-    setOpen(false);
-    setInitialValues({ userTypeName: "" });
-  };
+  
 
   const fetchData = async () => {
     setLoading(true);
@@ -84,30 +60,6 @@ const UserType = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
-  };
-
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      if (editCardId) {
-        await putData(`/userTypes/${editCardId}`, {
-          ...values,
-          userTypeId: editCardId,
-        });
-        showToast("success", "User Type updated successfully!");
-      }
-      fetchData();
-      handleClose();
-    } catch (err) {
-      showToast("error", "Error updating User Type!");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleEdit = (id, name) => {
-    setEditCardId(id);
-    setOpen(true);
-    setInitialValues({ userTypeName: name });
   };
 
   const alphabeticalComparator = (a, b) => {
@@ -149,8 +101,8 @@ const UserType = () => {
         overflow: "hidden",
         height: "100%",
         padding: "15px",
-        border: '2px solid #ccc',
-        borderRadius: '10px'
+        border: "2px solid #ccc",
+        borderRadius: "10px",
       }}
     >
       <div
@@ -246,9 +198,7 @@ const UserType = () => {
                   ) : null}
                 </TableSortLabel>
               </TableCell>
-              <TableCell align="right" sx={{ paddingRight: "50px" }}>
-                Action
-              </TableCell>
+              <TableCell align="right">User Type ID</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -260,36 +210,7 @@ const UserType = () => {
                     {row.userTypeName}
                   </TableCell>
                   <TableCell align="right" sx={{ paddingRight: "50px" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                      }}
-                    >
-                      <Button
-                        variant="outlined"
-                        startIcon={
-                          <FaEdit size={15} style={{ color: "#2397F3" }} />
-                        }
-                        sx={{
-                          color: "#2397F3",
-                          borderColor: "#2397F3",
-                          "&:hover": {
-                            borderColor: "#2397F3",
-                            color: "#2397F3",
-                          },
-                          marginRight: 1,
-                          fontSize: "0.75rem",
-                          padding: "4px 8px",
-                        }}
-                        onClick={() =>
-                          handleEdit(row.userTypeId, row.userTypeName)
-                        }
-                      >
-                        Edit
-                      </Button>
-                    </Box>
+                    {row.userTypeId}
                   </TableCell>
                 </TableRow>
               ))}
@@ -305,80 +226,7 @@ const UserType = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            sx={{ marginBottom: "20px" }}
-          >
-            Edit User Type
-          </Typography>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-            enableReinitialize={true}
-          >
-            {({ errors, touched, isSubmitting }) => (
-              <Form>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Field
-                      as={TextField}
-                      name="userTypeName"
-                      label="User Type Name"
-                      fullWidth
-                      error={
-                        touched.userTypeName && Boolean(errors.userTypeName)
-                      }
-                      helperText={touched.userTypeName && errors.userTypeName}
-                      variant="filled"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sx={{ textAlign: "right" }}>
-                    <Button
-                      type="button"
-                      variant="contained"
-                      color="error"
-                      onClick={handleClose}
-                      sx={{ marginRight: "8px", background: "#808080" }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      sx={{ background: "#1d396e" }}
-                      disabled={isSubmitting}
-                    >
-                      Update
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Form>
-            )}
-          </Formik>
-        </Box>
-      </Modal>
+      
     </Paper>
   );
 };
